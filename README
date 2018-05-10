@@ -43,7 +43,8 @@ strategy is as follows:
 If you wish to change the percent identity or coverage cutoffs for assigning
 incompatibility groups, you may change the appropriate AWK and Python scripts.
 
-You will need to alter the path to the NCBI BLAST+ Suite in scripts/blast.sh.
+You will need to alter the path to the NCBI BLAST+ Suite in scripts/blast.sh
+and scripts/01-makeIncompatibilityBlastDB.sh.
 
 GNU sed is used in some scripts. If your system used BSD sed by default, you'll
 need to either make GNU sed your default or alter the scripts to use GNU sed.

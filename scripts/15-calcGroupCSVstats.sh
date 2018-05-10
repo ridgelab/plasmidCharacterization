@@ -1,7 +1,5 @@
 #! /bin/bash
 
-module load python/3/6
-
 MAIN_DIR="$(cd $( dirname "${BASH_SOURCE[0]}" )/..; pwd)"; cd ${MAIN_DIR}
 SCRIPTS_DIR="${MAIN_DIR}/scripts"
 GROUPS_DIR="${MAIN_DIR}/data/groups"
