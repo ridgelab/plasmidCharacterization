@@ -21,9 +21,9 @@ directory of data and scripts).
 If you wish to have different key terms, you will need to edit the regular
 expressions found in scripts/identifyPlasmidMatches.py. Depending on what you
 are searching for, you may need a different search heirarchy altogether.
-Presently, Beta-lactamase Special is a subset of of Beta-lactamase. It is in
-turn a subset of Antimicrobial Resistance. Thus, a find in Beta-lactamase
-Special will incrememnt the count for itself and it's parents. Similarly, DNA
+Presently, Beta-lactamase Special is a subset of of Beta-lactamase. It is, in
+turn, a subset of Antimicrobial Resistance. Thus, a find in Beta-lactamase
+Special will incrememnt the count for itself and its parents. Similarly, DNA
 Maintenance Special is a subset of DNA Maintenance. Otherwise, the search
 strategy is as follows:
 	If the CDS search region does not match an ignored term, search it for
@@ -44,5 +44,5 @@ incompatibility groups, you may change the appropriate AWK and Python scripts.
 You will need to alter the path to the NCBI BLAST+ Suite in scripts/blast.sh.
 
 GNU sed is used in some scripts. If your system used BSD sed by default, you'll
-need to either make your default GNU sed or alter the scripts to use GNU sed.
+need to either make GNU sed your default or alter the scripts to use GNU sed.
 
