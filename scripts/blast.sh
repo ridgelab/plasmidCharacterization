@@ -1,6 +1,6 @@
 #! /bin/bash
 
-BLAST_BIN_PATH="/fslhome/pickettb/software/ncbi-blast-2.4.0+-src/c++/build/bin"
+BLAST_BIN_PATH="${HOME}/software/ncbi-blast-2.4.0+-src/c++/build/bin"
 
 MAIN_DIR="$(cd $( dirname "${BASH_SOURCE[0]}" )/..; pwd)"; cd ${MAIN_DIR}
 PLASMID_FASTA_DIR="${MAIN_DIR}/data/plasmid_fasta"

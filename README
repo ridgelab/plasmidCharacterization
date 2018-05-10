@@ -1,4 +1,48 @@
 README
 ======
 
+This repository contains the scripts from [paper].
+
+For license information, please see `LICENSE'.
+
+It is designed to work by adding GenBank files into the data/original_gb
+directory. You will also need to add a Fasta file with of Incompatibility Group
+sequences into the directory data/original_incompatibility_groups with the name
+incompatibility.fasta. The Fasta file should work as long as it is correctly
+formatted. Single- or multi-line sequence entires are fine. No blank lines. The
+GenBank files should be concatenations of one or more GenBank files. As some
+accessions will fit into more than one grouping, it is okay for the GenBank
+record for a single accession to occur in more than one file. That record must,
+however, be the same in each case if you want things to work right.
+
+All scripts are designed to be run from the main directory (i.e., the parent
+directory of data and scripts). 
+
+If you wish to have different key terms, you will need to edit the regular
+expressions found in scripts/identifyPlasmidMatches.py. Depending on what you
+are searching for, you may need a different search heirarchy altogether.
+Presently, Beta-lactamase Special is a subset of of Beta-lactamase. It is in
+turn a subset of Antimicrobial Resistance. Thus, a find in Beta-lactamase
+Special will incrememnt the count for itself and it's parents. Similarly, DNA
+Maintenance Special is a subset of DNA Maintenance. Otherwise, the search
+strategy is as follows:
+	If the CDS search region does not match an ignored term, search it for
+	each of the following term groupings, stopping as soon as a match is
+	identified:
+
+		-Antimicrobial Resistance (with its subgroups)
+		-Toxin/Antitoxin System
+		-DNA Maintenance (with its subgroup)
+		-Mobile Genetic Elements
+		-Hypothetical Genes
+	
+	If no match is found, assign it to an "Other" category.
+
+If you wish to change the percent identity or coverage cutoffs for assigning
+incompatibility groups, you may change the appropriate AWK and Python scripts.
+
+You will need to alter the path to the NCBI BLAST+ Suite in scripts/blast.sh.
+
+GNU sed is used in some scripts. If your system used BSD sed by default, you'll
+need to either make your default GNU sed or alter the scripts to use GNU sed.
 

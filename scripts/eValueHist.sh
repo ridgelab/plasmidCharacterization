@@ -1,6 +1,6 @@
 #! /bin/bash
 
-MAIN_DIR="/fslhome/pickettb/compute/plasmid"
+MAIN_DIR="$(cd $( dirname "${BASH_SOURCE[0]}" )/..; pwd)"; cd ${MAIN_DIR}
 SCRIPTS_DIR="${MAIN_DIR}/scripts"
 INCOMP_BLAST_RESULTS_DIR="${MAIN_DIR}/data/incompatibility_groups/blast_results"
 
