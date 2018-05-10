@@ -108,7 +108,7 @@ def mobileGeneticElementsSearch(cds_search_region, matches_fd):
 	return searchCdsRegionForKeyTerms(cds_search_region, key_terms, matches_fd, False, ["Mobile Genetic Elements"])
 
 def hypotheticalGenesSearch(cds_search_region, matches_fd):
-	key_terms = [ r"hypothetical", "rdomain[ -]containing" ]
+	key_terms = [ r"hypothetical", r"domain[ -]containing" ]
 
 	return searchCdsRegionForKeyTerms(cds_search_region, key_terms, matches_fd, False, ["Hypothetical Genes"])
 
