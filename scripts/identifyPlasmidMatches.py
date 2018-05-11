@@ -33,17 +33,17 @@ def betaLactSpecialCopyNum(cds_search_region, matches_fd):
 	#key_terms = [ r"(?:^ndm|[ a]ndm)", r"(?:imp$|^imp[^abc]|[ a]imp[^abc])", r"(?:^vim|[ a]vim)", r"(?:^kpc|[ a]kpc)", r"carbapenem[^\s]" ] 
 	key_terms = [ r"(?:^|[^b-z])ndm", r"(?:^|[^b-z])imp(?:$|[^abc])", r"(?:^|[^b-z])vim", r"(?:^|[^b-z])kpc", r"carbapenem[^\s]" ] 
 
-	return searchCdsRegionForKeyTerms(cds_search_region, key_terms, matches_fd, False, ["Antimicrobial Resistance", "Beta-lactimase", "Beta-lactimase Special"])
+	return searchCdsRegionForKeyTerms(cds_search_region, key_terms, matches_fd, False, ["Antimicrobial Resistance", "Beta-lactamase", "Beta-lactamase Special"])
 
 def betaLactSearch(cds_search_region, matches_fd):
 	if not betaLactSpecialCopyNum(cds_search_region, matches_fd):
 
-		key_terms = [ r"(?:^|[^p])bla", r"beta[ -]lactim[^\s]", r"(?:^|[^p])oxa-", 
+		key_terms = [ r"(?:^|[^p])bla", r"beta[ -]lactam[^\s]", r"(?:^|[^p])oxa-", 
 			r"(?:^|[^p])dha-", r"(?:^|[^p])sfo-", r"(?:^|[^p])shv-", r"(?:^|[^p])tem-", 
 			r"(?:^|[^p])ctx-", r"(?:^|[^p])ampr", r"(?:^|[^p])cmy-", r"oxacillin[^\s]", 
 			r"penicillin[^\s]", r"cephalosporin[^\s]" ]
 
-		return searchCdsRegionForKeyTerms(cds_search_region, key_terms, matches_fd, False, ["Antimicrobial Resistance", "Beta-lactimase"])
+		return searchCdsRegionForKeyTerms(cds_search_region, key_terms, matches_fd, False, ["Antimicrobial Resistance", "Beta-lactamase"])
 	else:
 		return True
 

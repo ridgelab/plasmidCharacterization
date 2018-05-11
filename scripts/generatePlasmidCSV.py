@@ -26,7 +26,7 @@ def getPlasmidLength(input_length_fn):
 		return int(ifd.readline().rstrip('\n'))
 
 def getRegionCounts(categories):
-	cats = [ "Antimicrobial Resistance", "Beta-lactimase", "Beta-lactimase Special", 
+	cats = [ "Antimicrobial Resistance", "Beta-lactamase", "Beta-lactamase Special", 
 		"Plasmid Transfer", "Toxin System", "DNA Maintenance", 
 		"DNA Maintenance Special", "Mobile Genetic Elements", "Hypothetical Genes", "Other" ]
 	
@@ -176,7 +176,7 @@ if __name__ == "__main__":
 	csv_header = [ "Accession #", 
 		"Plasmid Length", 
 		"Antimicrobial Resistance CDS", "Antimicrobial Resistance CDS %", 
-		"Beta-lactimase CDS","Beta-lactimase CDS %", "Beta-lactimase Special (Carbapenem*,IMP,KPC,NDM,VIM) Copy #", "Beta-lactimase Special (Carbapenem*,IMP,KPC,NDM,VIM) Copy # % of Beta-lactimase", "Beta-lactimase Special (Carbapenem*,IMP,KPC,NDM,VIM) Copy # % of Total", "Beta-lactimase Special (Carbapenem*,IMP,KPC,NDM,VIM) Absent (Yes/No)", 
+		"Beta-lactamase CDS","Beta-lactamase CDS %", "Beta-lactamase Special (Carbapenem*,IMP,KPC,NDM,VIM) Copy #", "Beta-lactamase Special (Carbapenem*,IMP,KPC,NDM,VIM) Copy # % of Beta-lactamase", "Beta-lactamase Special (Carbapenem*,IMP,KPC,NDM,VIM) Copy # % of Total", "Beta-lactamase Special (Carbapenem*,IMP,KPC,NDM,VIM) Absent (Yes/No)", 
 		"Plasmid Transfer CDS", "Plasmid Transfer CDS %", 
 		"Toxin/Antitoxin System CDS", "Toxin/Antitoxin System CDS %", "Toxin/Antitoxin System Present (Yes/No)", 
 		"DNA Maintenance/Modification CDS", "DNA Maintenance/Modification CDS %", "DNA Maintenance/Modification Special (mucA,mucB,polymerase,umuC,umuD) Copy #", "DNA Maintenance/Modification Special (mucA,mucB,polymerase,umuC,umuD) Copy # % of DNA Maintenance/Modification", "DNA Maintenance/Modification Special (mucA,mucB,polymerase,umuC,umuD) Copy # % of Total", "DNA Maintenance/Modification Special (mucA,mucB,polymerase,umuC,umuD) Present (Yes/No)", 
