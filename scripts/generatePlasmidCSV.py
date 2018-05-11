@@ -26,7 +26,7 @@ def getPlasmidLength(input_length_fn):
 		return int(ifd.readline().rstrip('\n'))
 
 def getRegionCounts(categories):
-	cats = [ "Antimicrobial Resistance", "Beta-lactamase", "Beta-lactamase Special", 
+	cats = [ "Antimicrobial Resistance", "Beta-lactimase", "Beta-lactimase Special", 
 		"Plasmid Transfer", "Toxin System", "DNA Maintenance", 
 		"DNA Maintenance Special", "Mobile Genetic Elements", "Hypothetical Genes", "Other" ]
 	

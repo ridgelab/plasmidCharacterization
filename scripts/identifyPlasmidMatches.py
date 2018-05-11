@@ -33,17 +33,17 @@ def betaLactSpecialCopyNum(cds_search_region, matches_fd):
 	#key_terms = [ r"(?:^ndm|[ a]ndm)", r"(?:imp$|^imp[^abc]|[ a]imp[^abc])", r"(?:^vim|[ a]vim)", r"(?:^kpc|[ a]kpc)", r"carbapenem[^\s]" ] 
 	key_terms = [ r"(?:^|[^b-z])ndm", r"(?:^|[^b-z])imp(?:$|[^abc])", r"(?:^|[^b-z])vim", r"(?:^|[^b-z])kpc", r"carbapenem[^\s]" ] 
 
-	return searchCdsRegionForKeyTerms(cds_search_region, key_terms, matches_fd, False, ["Antimicrobial Resistance", "Beta-lactamase", "Beta-lactamase Special"])
+	return searchCdsRegionForKeyTerms(cds_search_region, key_terms, matches_fd, False, ["Antimicrobial Resistance", "Beta-lactimase", "Beta-lactimase Special"])
 
 def betaLactSearch(cds_search_region, matches_fd):
 	if not betaLactSpecialCopyNum(cds_search_region, matches_fd):
 
-		key_terms = [ r"(?:^|[^p])bla", r"beta[ -]lactam[^\s]", r"(?:^|[^p])oxa-", 
+		key_terms = [ r"(?:^|[^p])bla", r"beta[ -]lactim[^\s]", r"(?:^|[^p])oxa-", 
 			r"(?:^|[^p])dha-", r"(?:^|[^p])sfo-", r"(?:^|[^p])shv-", r"(?:^|[^p])tem-", 
 			r"(?:^|[^p])ctx-", r"(?:^|[^p])ampr", r"(?:^|[^p])cmy-", r"oxacillin[^\s]", 
 			r"penicillin[^\s]", r"cephalosporin[^\s]" ]
 
-		return searchCdsRegionForKeyTerms(cds_search_region, key_terms, matches_fd, False, ["Antimicrobial Resistance", "Beta-lactamase"])
+		return searchCdsRegionForKeyTerms(cds_search_region, key_terms, matches_fd, False, ["Antimicrobial Resistance", "Beta-lactimase"])
 	else:
 		return True
 
@@ -59,7 +59,7 @@ def antimicrobResistSearch(cds_search_region, matches_fd):
 			r"tetr(?:$|[^a]|acycline)", r"pco[a-ers]", r"ars[a-dhr]", r"sil[abcefprs]", 
 			r"(?:sulfonamide|trimethoprim|nickel)[ -]resistant", r"(?:[^a-z]|^)folp(?:$|[^a-z])", 
 			r"(?:[^a-z]|^)sul[12](?:$|[^a-z])", r"(?:[^a-z]|^)dfra(?:$|[^a-z])", 
-			r"(?:[^a-z]|^)ncr[a-c,y](?:$|[^a-z])", r"(?:[^a-z]|^)nirb(?:$|[^a-z])", r"rifampin" ]
+			r"(?:[^a-z]|^)ncr[a-c,y](?:$|[^a-z])", r"(?:[^a-z]|^)nirb(?:$|[^a-z])", r"rifamp(?:in|icin)" ]
 		
 		return searchCdsRegionForKeyTerms(cds_search_region, key_terms, matches_fd, False, ["Antimicrobial Resistance"])
 	else:
@@ -108,7 +108,7 @@ def mobileGeneticElementsSearch(cds_search_region, matches_fd):
 	return searchCdsRegionForKeyTerms(cds_search_region, key_terms, matches_fd, False, ["Mobile Genetic Elements"])
 
 def hypotheticalGenesSearch(cds_search_region, matches_fd):
-	key_terms = [ r"hypothetical", r"domain[ -]containing" ]
+	key_terms = [ r"hypothetical", r"domain[ -]containing", r"uncharacterized protein", r"unknown function" ]
 
 	return searchCdsRegionForKeyTerms(cds_search_region, key_terms, matches_fd, False, ["Hypothetical Genes"])
 
