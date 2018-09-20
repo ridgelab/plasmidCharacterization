@@ -5,8 +5,6 @@ This repository contains the scripts from [paper].
 If you use this repository, or ideas from it, please both cite the paper in your
 work and include the link to this repository.
 
-For license information, please see `LICENSE'.
-
 It is designed to work by adding GenBank files into the data/original_gb
 directory. You will also need to add a Fasta file with of Incompatibility Group
 sequences into the directory data/original_incompatibility_groups with the name
