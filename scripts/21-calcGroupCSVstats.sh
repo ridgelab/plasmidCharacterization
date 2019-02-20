@@ -18,7 +18,7 @@ do
 	ifn="${GROUP_CSV_DIR}/${GROUP}.csv"
 	ofn="${GROUP_STATS_DIR}/${GROUP}.stats"
 
-	# TODO the command to calc stuff
+	# the command to calc stuff
 	python3 "${SCRIPTS_DIR}/calcGroupCSVstats.py" "${ifn}" "${ofn}"
 
 	COMMAND_EXIT=$?

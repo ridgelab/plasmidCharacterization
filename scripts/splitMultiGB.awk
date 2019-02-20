@@ -15,8 +15,6 @@ BEGIN {
 	{
 		accession = $2;
 		ofn = accession ".gb";
-		#print "accession: " accession
-		#print "ofn: " ofn
 		print $0 > ofn;
 	}
 	else

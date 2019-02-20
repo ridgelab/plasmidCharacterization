@@ -6,8 +6,8 @@
 def handleArgs():
 	import sys
 
-	if len(sys.argv) != 6:
-		sys.stderr.write("\n\tERROR: You must provide 5 arguments\n\t\t1- plasmid accession\n\t\t2- output csv dir\n\t\t3- input fasta dir\n\t\t4- input matches dir\n\t\t5- input incompatibility groups blast output dir\n\n")
+	if len(sys.argv) != 9:
+		sys.stderr.write("\n\tERROR: You must provide 8 arguments\n\t\t1- plasmid accession\n\t\t2- output csv dir\n\t\t3- input fasta dir\n\t\t4- input matches dir\n\t\t5- input incompatibility groups blast output dir\n\t\t6- input source info tsv file\n\t\t7- input plasmid blast results dir\n\t\t8- input sequence techs tsv\n\n")
 		sys.exit(1)
 	
 	plasmid_accession = sys.argv[1]
@@ -15,8 +15,11 @@ def handleArgs():
 	input_fasta_and_length_dir = sys.argv[3].rstrip('/')
 	input_matches_dir = sys.argv[4].rstrip('/')
 	input_incompatibility_groups_blast_output_dir = sys.argv[5].rstrip('/')
+	input_source_info_fn = sys.argv[6]
+	input_blast_results_dir = sys.argv[7].rstrip('/')
+	input_sequence_techs_fn = sys.argv[8]
 
-	return plasmid_accession, output_csv_dir, input_fasta_and_length_dir, input_matches_dir, input_incompatibility_groups_blast_output_dir
+	return plasmid_accession, output_csv_dir, input_fasta_and_length_dir, input_matches_dir, input_incompatibility_groups_blast_output_dir, input_source_info_fn, input_blast_results_dir, input_sequence_techs_fn
 
 def CSVify(some_str):
 	return '"' + some_str + '"'
@@ -155,6 +158,33 @@ def getIncompatibilityGroups(input_incompatibility_groups_fn):
 	with open(input_incompatibility_groups_fn, 'r') as ifd:
 		return [line.rstrip('\n') for line in ifd]
 
+def extractSourceInfo(input_source_info_fn, accession):
+	with open(input_source_info_fn, 'r') as ifd:
+		for line in ifd:
+			fields = line.rstrip('\n').split('\t')
+			acc_num = fields[0]
+			organism = fields[1]
+			isolation_source = fields[2]
+			country = fields[3]
+			collection_date = fields[4]
+			if acc_num == accession:
+				return organism, isolation_source, country, collection_date
+
+def getIdenticalPlasmids(input_identical_plasmids_fn):
+	identical_plasmids = ''
+	with open(input_identical_plasmids_fn, 'r') as ifd:
+		identical_plasmids = ifd.read().rstrip('\n').replace('\n', ',')
+	
+	return identical_plasmids if identical_plasmids else "NA"
+
+def extractSeqTechInfo(input_sequencing_technology_fn, plasmid_accession):
+	with open(input_sequencing_technology_fn, 'r') as ifd:
+		for line in ifd:
+			fields = line.rstrip('\n').split('\t')
+			if fields[0] == plasmid_accession:
+				return fields[1:]
+
+
 # ==== #
 # MAIN #
 # ==== #
@@ -164,7 +194,7 @@ if __name__ == "__main__":
 	import sys
 	
 	# handle args
-	plasmid_accession, output_csv_dir, input_fasta_and_length_dir, input_matches_dir, input_incompatibility_groups_blast_output_dir = handleArgs()
+	plasmid_accession, output_csv_dir, input_fasta_and_length_dir, input_matches_dir, input_incompatibility_groups_blast_output_dir, input_source_info_fn, input_blast_results_dir, input_sequence_techs_fn = handleArgs()
 
 	# set some helpful vars
 	ocn = output_csv_dir + '/' + plasmid_accession + ".csv"
@@ -172,8 +202,14 @@ if __name__ == "__main__":
 	iln = input_fasta_and_length_dir + '/' + plasmid_accession + ".length"
 	mfn = input_matches_dir + '/' + plasmid_accession + "_matches.tsv"
 	iign = input_incompatibility_groups_blast_output_dir + '/' + plasmid_accession + "_families.list"
+	isin = input_source_info_fn
+	iipn = input_blast_results_dir + '/' + plasmid_accession + "_identicalPlasmids.list"
+	istn = input_sequence_techs_fn
 
 	csv_header = [ "Accession #", 
+		"Identical Plasmids", 
+		"Source: Organism", "Source: Isolation Source", "Source: Country", "Source: Collection Date", 
+		"Sequencing Technologies", "Sequencing Technologies Count", "Short Read Count", "Long Read Count", "Illumina Count", "Roche 454 Count", "ABI Solid Count", "Sanger Count", "Ion Torrent Count", "PacBio Count", "ONT Count", 
 		"Plasmid Length", 
 		"Antimicrobial Resistance CDS", "Antimicrobial Resistance CDS %", 
 		"Beta-lactamase CDS","Beta-lactamase CDS %", "Beta-lactamase Special (Carbapenem*,IMP,KPC,NDM,VIM) Copy #", "Beta-lactamase Special (Carbapenem*,IMP,KPC,NDM,VIM) Copy # % of Beta-lactamase", "Beta-lactamase Special (Carbapenem*,IMP,KPC,NDM,VIM) Copy # % of Total", "Beta-lactamase Special (Carbapenem*,IMP,KPC,NDM,VIM) Absent (Yes/No)", 
@@ -192,6 +228,18 @@ if __name__ == "__main__":
 	
 	#	get plasmid accession #
 	plasmid_accession_output_str = CSVify(plasmid_accession)
+
+	#	get identical plasmid accession #s
+	identical_plasmids = getIdenticalPlasmids(iipn)
+	identical_plasmids_output_str = CSVify(identical_plasmids)
+
+	#	get source info
+	organism, isolation_source, country, collection_data = extractSourceInfo(isin, plasmid_accession)
+	source_info_output_str = '"' + organism + '","' + isolation_source + '","' + country + '","' + collection_data + '"'
+
+	#	get seq. tech. info
+	seq_tech_cols = extractSeqTechInfo(istn, plasmid_accession)
+	seq_tech_output_str = CSVify('","'.join(seq_tech_cols))
 
 	#	get plasmid length
 	plasmid_length = getPlasmidLength(iln)
@@ -212,6 +260,9 @@ if __name__ == "__main__":
 
 		# csv data line
 		ocd.write(plasmid_accession_output_str + ',') # accession #
+		ocd.write(identical_plasmids_output_str + ',') # identical plasmids
+		ocd.write(source_info_output_str + ',') # source info
+		ocd.write(seq_tech_output_str + ',') # sequencing technologies
 		ocd.write(plasmid_length_output_str + ',') # plasmid length
 		ocd.write(cds_info_output_str + ',') # CDS info (Antimicrobial Resistance CDS (%) ... Total CDS)
 		ocd.write(incompatibility_groups_output_str + '\n') # incompatibility groups

@@ -31,12 +31,14 @@ def parseGbFile(input_gb_fn, output_search_regions_fn, output_gb_fn):
 
 				# skip from LOCUS to FEATURES
 				line = ifd.readline() # grab the first line ("LOCUS")
-				while line.rstrip('\n').lstrip(' ').split(' ')[0] != "FEATURES":
+				tag_word = line.rstrip('\n').lstrip(' ').split(' ')[0]
+				while tag_word != "FEATURES":
 					ogbd.write(line)
 					line = ifd.readline()
+					tag_word = line.rstrip('\n').lstrip(' ').split(' ')[0]
 
 				# write then skip past FEATURES
-				ogbd.write(line)
+				ogbd.write(blue + line + no_color)
 				line = ifd.readline()
 
 				# skip any lines necessary until CDS or ORIGIN is found
@@ -57,7 +59,7 @@ def parseGbFile(input_gb_fn, output_search_regions_fn, output_gb_fn):
 						line = ifd.readline()
 						tag_word = line.rstrip('\n').lstrip(' ').split(' ')[0]
 
-					if tag_word == "CDS":
+					if tag_word == "CDS" or tag_word == "source":
 						# write the CDS line
 						osrd.write(line)
 						ogbd.write(blue + line + no_color)

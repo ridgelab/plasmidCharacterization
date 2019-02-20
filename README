@@ -18,6 +18,11 @@ however, be the same in each case if you want things to work right.
 All scripts are designed to be run from the main directory (i.e., the parent
 directory of data and scripts). 
 
+Some information is collected about the GenBank files such as the source
+country and sequencing methods. This information is extracted rather simply
+when compared to the search method for the primary search strategy described
+in the next paragraph.
+
 If you wish to have different key terms, you will need to edit the regular
 expressions found in scripts/identifyPlasmidMatches.py. Depending on what you
 are searching for, you may need a different search heirarchy altogether.
@@ -41,9 +46,11 @@ strategy is as follows:
 If you wish to change the percent identity or coverage cutoffs for assigning
 incompatibility groups, you may change the appropriate AWK and Python scripts.
 
-You will need to alter the path to the NCBI BLAST+ Suite in scripts/blast.sh
-and scripts/01-makeIncompatibilityBlastDB.sh.
+You will need to alter the path to the NCBI BLAST+ Suite in scripts/blast.sh,
+scripts/blastPlasmid.sh, scripts/01-makeIncompatibilityBlastDB.sh, and
+scripts/12-makePlasmidBlastDB.sh.
 
 GNU sed is used in some scripts. If your system used BSD sed by default, you'll
 need to either make GNU sed your default or alter the scripts to use GNU sed.
+Likewise, the same thing will need to be done for AWK and find.
 

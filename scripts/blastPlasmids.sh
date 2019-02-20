@@ -1,11 +1,11 @@
 #! /bin/bash
 
-BLAST_BIN_PATH="/fslhome/pickettb/software/ncbi-blast-2.4.0+-src/c++/build/bin"
+BLAST_BIN_PATH="/fslhome/pickettb/software/blast+-2.4.0/c++/build/bin"
 
 MAIN_DIR="$(cd $( dirname "${BASH_SOURCE[0]}" )/..; pwd)"; cd ${MAIN_DIR}
 PLASMID_FASTA_DIR="${MAIN_DIR}/data/plasmid_fasta"
-INCOMPATIBILITY_DB="${MAIN_DIR}/data/incompatibility_groups/incompatibility"
-BLAST_RESULT_DIR="${MAIN_DIR}/data/incompatibility_groups/blast_results"
+BLAST_RESULT_DIR="${MAIN_DIR}/data/plasmid_blast_results"
+PLASMIDS_DB="${BLAST_RESULT_DIR}/plasmids"
 
 ACCESSION="${1}"
 THREADS=8
@@ -14,11 +14,11 @@ ${BLAST_BIN_PATH}/blastn \
 	-query "${PLASMID_FASTA_DIR}/${ACCESSION}.fasta" \
 	-strand both \
 	-task blastn \
-	-db ${INCOMPATIBILITY_DB} \
+	-db ${PLASMIDS_DB} \
 	-out ${BLAST_RESULT_DIR}/${ACCESSION}_fmt6c.tsv \
 	-outfmt "6 qseqid sseqid pident length evalue qframe qlen qstart qend sframe slen sstart send qseq sseq" \
 	-num_threads ${THREADS} \
-	-perc_identity 80 \
+	-perc_identity 98
 
 exit $?
 

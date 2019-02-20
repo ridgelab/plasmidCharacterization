@@ -232,6 +232,139 @@ def writeGroupStructure(ofd, all_group_structure_fields):
 		ofd.write(o[3] + ' ' * (c3 - s[3] + 3))
 		ofd.write('\n')
 
+def writeSequencingTechnologies(ofd, all_seq_tech_fields):
+	
+	output = []
+	sizes = []
+	
+	header1 = ("Sequencing", "Num", "Occurances per", "Percent Total", "Percent Known")
+	header2 = ("Technology", "Plasmids", "Plasmid", "Plasmids", "Plasmids")
+
+	output.append(header1)
+	sizes.append(tuple(map(len, output[-1])))
+	output.append(header2)
+	sizes.append(tuple(map(len, output[-1])))
+
+	known_seq_tech_fields = [seq_tech_fields for seq_tech_fields in all_seq_tech_fields if seq_tech_fields[0] != "NA"]
+	total_plasmids = len(all_seq_tech_fields)
+	known_plasmids = len(known_seq_tech_fields)
+	unknown_plasmids = total_plasmids - known_plasmids
+
+
+	output.append(("Known", str(known_plasmids), "NA", "{0:.3f}".format(known_plasmids / total_plasmids * 100), "{0:.3f}".format(100.0)))
+	sizes.append(tuple(map(len, output[-1])))
+	output.append(("Unknown", str(unknown_plasmids), "NA", "{0:.3f}".format(unknown_plasmids / total_plasmids * 100), "{0:.3f}".format(0.0)))
+	sizes.append(tuple(map(len, output[-1])))
+
+	# convert the numbers from strs to ints
+	for i,fields in enumerate(known_seq_tech_fields):
+		for j,field in enumerate(fields):
+			if j > 0:
+				known_seq_tech_fields[i][j] = int(field)
+
+	indices = { "Illumina": 4, "Roche 454": 5, "ABI Solid": 6,
+		"Sanger": 7, "Ion Torrent": 8, "PacBio": 9, 
+		"ONT": 10, "Short": 2, "Long": 3, "Total": 1}
+
+	if known_plasmids > 0:
+
+		for key in [ "Illumina", "Roche 454", "ABI Solid", "Sanger", "Ion Torrent", "PacBio", "ONT", "Short", "Long" ]:
+			counts = [fields[indices[key]] for fields in known_seq_tech_fields]
+			count = sum(counts)
+			plasmids = sum(list(map(int, map(bool, counts))))
+
+			if plasmids == 0:
+				output.append((key, "0", "NA", "{0:.3f}".format(0.0), "{0:.3f}".format(0.0)))
+				sizes.append(tuple(map(len, output[-1])))
+			else: 
+				output.append((key, str(plasmids), "{0:.3f}".format(count / plasmids), "{0:.3f}".format(plasmids / total_plasmids * 100), "{0:.3f}".format(plasmids / known_plasmids * 100)))
+				sizes.append(tuple(map(len, output[-1])))
+
+		title = "Multiple Short"
+		counts = [fields[indices["Short"]] for fields in known_seq_tech_fields if fields[indices["Short"]] > 1]
+		count = sum(counts)
+		plasmids = sum(list(map(int, map(bool, counts))))
+		if plasmids == 0:
+			output.append((title, "0", "NA", "{0:.3f}".format(0.0), "{0:.3f}".format(0.0)))
+			sizes.append(tuple(map(len, output[-1])))
+		else: 
+			output.append((title, str(plasmids), "{0:.3f}".format(count / plasmids), "{0:.3f}".format(plasmids / total_plasmids * 100), "{0:.3f}".format(plasmids / known_plasmids * 100)))
+			sizes.append(tuple(map(len, output[-1])))
+
+		title = "Multiple Long"
+		counts = [fields[indices["Long"]] for fields in known_seq_tech_fields if fields[indices["Long"]] > 1]
+		count = sum(counts)
+		plasmids = sum(list(map(int, map(bool, counts))))
+		if plasmids == 0:
+			output.append((title, "0", "NA", "0.0", "0.0"))
+			sizes.append(tuple(map(len, output[-1])))
+		else: 
+			output.append((title, str(plasmids), "{0:.3f}".format(count / plasmids), "{0:.3f}".format(plasmids / total_plasmids * 100), "{0:.3f}".format(plasmids / known_plasmids * 100)))
+			sizes.append(tuple(map(len, output[-1])))
+
+		title = "Short Only"
+		counts = [fields[indices["Short"]] for fields in known_seq_tech_fields if fields[indices["Long"]] == 0]
+		count = sum(counts)
+		plasmids = sum(list(map(int, map(bool, counts))))
+		if plasmids == 0:
+			output.append((title, "0", "NA", "0.0", "0.0"))
+			sizes.append(tuple(map(len, output[-1])))
+		else: 
+			output.append((title, str(plasmids), "{0:.3f}".format(count / plasmids), "{0:.3f}".format(plasmids / total_plasmids * 100), "{0:.3f}".format(plasmids / known_plasmids * 100)))
+			sizes.append(tuple(map(len, output[-1])))
+
+		title = "Long Only"
+		counts = [fields[indices["Long"]] for fields in known_seq_tech_fields if fields[indices["Short"]] == 0]
+		count = sum(counts)
+		plasmids = sum(list(map(int, map(bool, counts))))
+		if plasmids == 0:
+			output.append((title, "0", "NA", "0.0", "0.0"))
+			sizes.append(tuple(map(len, output[-1])))
+		else: 
+			output.append((title, str(plasmids), "{0:.3f}".format(count / plasmids), "{0:.3f}".format(plasmids / total_plasmids * 100), "{0:.3f}".format(plasmids / known_plasmids * 100)))
+			sizes.append(tuple(map(len, output[-1])))
+
+		title = "Short & Long"
+		counts = [ fields[indices["Total"]] for fields in known_seq_tech_fields if fields[indices["Short"]] > 0 and fields[indices["Long"]] > 0 ]
+		count = sum(counts)
+		plasmids = sum(list(map(int, map(bool, counts))))
+		if plasmids == 0:
+			output.append((title, "0", "NA", "0.0", "0.0"))
+			sizes.append(tuple(map(len, output[-1])))
+		else: 
+			output.append((title, str(plasmids), "{0:.3f}".format(count / plasmids), "{0:.3f}".format(plasmids / total_plasmids * 100), "{0:.3f}".format(plasmids / known_plasmids * 100)))
+			sizes.append(tuple(map(len, output[-1])))
+
+		c0 = 0
+		c1 = 0
+		c2 = 0
+		c3 = 0
+		c4 = 0
+		for size in sizes:
+			if size[0] > c0:
+				c0 = size[0]
+			if size[1] > c1:
+				c1 = size[1]
+			if size[2] > c2:
+				c2 = size[2]
+			if size[3] > c3:
+				c3 = size[3]
+			if size[4] > c4:
+				c4 = size[4]
+		
+		ofd.write("Sequencing Technologies:\n")
+		for o,s in zip(output,sizes):
+			ofd.write('\t')
+			ofd.write(o[0] + ' ' * (c0 - s[0] + 3))
+			ofd.write(o[1] + ' ' * (c1 - s[1] + 3))
+			ofd.write(o[2] + ' ' * (c2 - s[2] + 3))
+			ofd.write(o[3] + ' ' * (c3 - s[3] + 3))
+			ofd.write(o[4] + ' ' * (c4 - s[4] + 3))
+			ofd.write('\n')
+	else:
+		ofd.write("Sequencing Technologies: uknown\n")
+
+
 ########
 # MAIN #
 ########
@@ -260,19 +393,21 @@ if __name__ == "__main__":
 			plasmid_lengths = []
 			all_inc_groups = {}
 			all_group_structure_fields = []
+			all_seq_tech_fields = []
 
 			# loop through each plasmid_record (line) in the input file
 			for plasmid_record in ifd:
 				# increment the total num of plasmids (one plasmid exists per line)
 				total_number_of_plasmids += 1
 
-				# split the record into its 28 separate columns/fields
+				# split the record into its 44 separate columns/fields
 				fields = plasmid_record.rstrip('\n').rstrip('"').lstrip('"').split("\",\"")
 
 				plasmid_accession = fields[0].strip('"')
-				plasmid_length = int(fields[1].strip('"'))
-				inc_groups = fields[28].strip('"').split(',')
-				group_structure_fields = tuple(map(lambda field: int(field.strip('"')), (fields[1], fields[2], fields[4], fields[10], fields[12], fields[15], fields[21], fields[23], fields[25])))
+				seq_tech_fields = list(map(lambda field: field.strip('"'), fields[6:17]))
+				plasmid_length = int(fields[17].strip('"'))
+				inc_groups = fields[44].strip('"').split(',')
+				group_structure_fields = tuple(map(lambda field: int(field.strip('"')), (fields[17], fields[18], fields[20], fields[26], fields[28], fields[31], fields[37], fields[39], fields[41])))
 
 				# capture length information
 				plasmid_lengths.append(plasmid_length)
@@ -285,6 +420,9 @@ if __name__ == "__main__":
 
 				# capture info about group structure
 				all_group_structure_fields.append(group_structure_fields)
+
+				# capture info about sequencing technologies
+				all_seq_tech_fields.append(seq_tech_fields)
 
 
 		# write stuff to the output file
@@ -314,36 +452,54 @@ if __name__ == "__main__":
 		ofd.write("\tThis information is already reported in the CSV file: " + ifn.split('/')[-1] + '\n')
 		ofd.write('\n') # extra newline
 
-
+		#	Sequencing Technologies
+		writeSequencingTechnologies(ofd, all_seq_tech_fields)
+		ofd.write('\n') # extra newline
 
 
 # 00 "Accession #"
-# 01 "Plasmid Length"
-# 02 "Antimicrobial Resistance CDS"
-# 03 "Antimicrobial Resistance CDS %"
-# 04 "Beta-lactimase CDS"
-# 05 "Beta-lactimase CDS %"
-# 06 "Beta-lactimase Special (Carbapenem*,IMP,KPC,NDM,VIM) Copy #"
-# 07 "Beta-lactimase Special (Carbapenem*,IMP,KPC,NDM,VIM) Copy # % of Beta-lactimase"
-# 08 "Beta-lactimase Special (Carbapenem*,IMP,KPC,NDM,VIM) Copy # % of Total"
-# 09 "Beta-lactimase Special (Carbapenem*,IMP,KPC,NDM,VIM) Absent (Yes/No)"
-# 10 "Plasmid Transfer CDS"
-# 11 "Plasmid Transfer CDS %"
-# 12 "Toxin/Antitoxin System CDS"
-# 13 "Toxin/Antitoxin System CDS %"
-# 14 "Toxin/Antitoxin System Present (Yes/No)"
-# 15 "DNA Maintenance/Modification CDS"
-# 16 "DNA Maintenance/Modification CDS %"
-# 17 "DNA Maintenance/Modification Special (mucA,mucB,polymerase,umuC,umuD) Copy #"
-# 18 "DNA Maintenance/Modification Special (mucA,mucB,polymerase,umuC,umuD) Copy # % of DNA Maintenance/Modifcation"
-# 19 "DNA Maintenance/Modification Special (mucA,mucB,polymerase,umuC,umuD) Copy # % of Total"
-# 20 "DNA Maintenance/Modification Special (mucA,mucB,polymerase,umuC,umuD) Present (Yes/No)"
-# 21 "Mobile Genetic Elements CDS"
-# 22 "Mobile Genetic Elements CDS %"
-# 23 "Hypothetical Genes CDS"
-# 24 "Hypothetical Genes CDS %"
-# 25 "Other CDS"
-# 26 "Other CDS %"
-# 27 "Total CDS"
-# 28 "Incompatibility Groups"
+# 01 "Identical Plasmids"
+# 02 "Source: Organism"
+# 03 "Source: Isolation Source"
+# 04 "Source: Country"
+# 05 "Source: Collection Date"
+# 06 "Sequencing Technologies"
+# 07 "Sequencing Technologies Count"
+# 08 "Short Read Count"
+# 09 "Long Read Count"
+# 10 "Illumina Count"
+# 11 "Roche 454 Count"
+# 12 "ABI Solid Count"
+# 13 "Sanger Count"
+# 14 "Ion Torrent Count"
+# 15 "PacBio Count"
+# 16 "ONT Count"
+# 17 "Plasmid Length"
+# 18 "Antimicrobial Resistance CDS"
+# 19 "Antimicrobial Resistance CDS %"
+# 20 "Beta-lactimase CDS"
+# 21 "Beta-lactimase CDS %"
+# 22 "Beta-lactimase Special (Carbapenem*,IMP,KPC,NDM,VIM) Copy #"
+# 23 "Beta-lactimase Special (Carbapenem*,IMP,KPC,NDM,VIM) Copy # % of Beta-lactimase"
+# 24 "Beta-lactimase Special (Carbapenem*,IMP,KPC,NDM,VIM) Copy # % of Total"
+# 25 "Beta-lactimase Special (Carbapenem*,IMP,KPC,NDM,VIM) Absent (Yes/No)"
+# 26 "Plasmid Transfer CDS"
+# 27 "Plasmid Transfer CDS %"
+# 28 "Toxin/Antitoxin System CDS"
+# 29 "Toxin/Antitoxin System CDS %"
+# 30 "Toxin/Antitoxin System Present (Yes/No)"
+# 31 "DNA Maintenance/Modification CDS"
+# 32 "DNA Maintenance/Modification CDS %"
+# 33 "DNA Maintenance/Modification Special (mucA,mucB,polymerase,umuC,umuD) Copy #"
+# 34 "DNA Maintenance/Modification Special (mucA,mucB,polymerase,umuC,umuD) Copy # % of DNA Maintenance/Modifcation"
+# 35 "DNA Maintenance/Modification Special (mucA,mucB,polymerase,umuC,umuD) Copy # % of Total"
+# 36 "DNA Maintenance/Modification Special (mucA,mucB,polymerase,umuC,umuD) Present (Yes/No)"
+# 37 "Mobile Genetic Elements CDS"
+# 38 "Mobile Genetic Elements CDS %"
+# 39 "Hypothetical Genes CDS"
+# 40 "Hypothetical Genes CDS %"
+# 41 "Other CDS"
+# 42 "Other CDS %"
+# 43 "Total CDS"
+# 44 "Incompatibility Groups"
 

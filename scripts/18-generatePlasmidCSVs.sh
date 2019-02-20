@@ -6,6 +6,9 @@ PLASMID_FASTA_DIR="${MAIN_DIR}/data/plasmid_fasta"
 PLASMID_CSV_DIR="${MAIN_DIR}/data/plasmid_csv"
 PLASMID_MATCHES_DIR="${MAIN_DIR}/data/plasmid_matches"
 INCOMP_BLAST_RESULTS_DIR="${MAIN_DIR}/data/incompatibility_groups/blast_results"
+SOURCE_INFO_FN="${MAIN_DIR}/data/plasmid_sourceInfo/sourceInfo.tsv"
+PLASMID_BLAST_RESULTS_DIR="${MAIN_DIR}/data/plasmid_blast_results"
+SEQ_TECHS_FN="${MAIN_DIR}/data/plasmid_seqTech/seqTech.tsv"
 
 FAILED=0
 
@@ -21,7 +24,10 @@ do
 		"${PLASMID_CSV_DIR}" \
 		"${PLASMID_FASTA_DIR}" \
 		"${PLASMID_MATCHES_DIR}" \
-		"${INCOMP_BLAST_RESULTS_DIR}"
+		"${INCOMP_BLAST_RESULTS_DIR}" \
+		"${SOURCE_INFO_FN}" \
+		"${PLASMID_BLAST_RESULTS_DIR}" \
+		"${SEQ_TECHS_FN}"
 
 	COMMAND_EXIT=$?
 
