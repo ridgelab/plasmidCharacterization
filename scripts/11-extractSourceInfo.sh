@@ -17,7 +17,7 @@ printf "%s\t%s\t%s\t%s\t%s\n" \
 	'organism' \
 	'isolation_source' \
 	'country' \
-	'collection_data' \
+	'collection_date' \
 	> "${SOURCE_COUNTS_DIR}/sourceInfo.tsv"
 
 while read ifn 
