@@ -13,11 +13,12 @@ rm -f ${PLASMID_BLAST_RESULTS_DIR}/*_fmt6c_cov98.tsv
 while read ifn 
 do
 	ACCESSION=`basename "${ifn}" "_fmt6c.tsv"`
-	${SCRIPTS_DIR}/queryAndSubCovCutoff98.awk "${PLASMID_BLAST_RESULTS_DIR}/${ACCESSION}_fmt6c.tsv" > "${PLASMID_BLAST_RESULTS_DIR}/${ACCESSION}_fmt6c_cov98.tsv"
+	#${SCRIPTS_DIR}/queryAndSubCovCutoff98-singleHit.awk "${PLASMID_BLAST_RESULTS_DIR}/${ACCESSION}_fmt6c.tsv" > "${PLASMID_BLAST_RESULTS_DIR}/${ACCESSION}_fmt6c_cov98.tsv"
+	python3 ${SCRIPTS_DIR}/queryAndSubCovCutoff98-multiHit.py "${PLASMID_BLAST_RESULTS_DIR}/${ACCESSION}_fmt6c.tsv" > "${PLASMID_BLAST_RESULTS_DIR}/${ACCESSION}_fmt6c_cov98.tsv"
 
-	AWK_EXIT=$?
+	CMD_EXIT=$?
 
-	if [ $AWK_EXIT -ne 0 ]
+	if [ $CMD_EXIT -ne 0 ]
 	then
 		printf "%s\n" "It looks like q&s cov. cutoff (98%) for ${ACCESSION} failed" 1>&2
 		FAILED=`bc <<< "${FAILED}+1"`
