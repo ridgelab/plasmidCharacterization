@@ -7,14 +7,15 @@ PLASMID_BLAST_RESULTS_DIR="${DATA_DIR}/plasmid_blast_results"
 
 FAILED=0
 
-chmod 644 ${PLASMID_BLAST_RESULTS_DIR}/*_fmt6c_cov98.tsv &> /dev/null
-rm -f ${PLASMID_BLAST_RESULTS_DIR}/*_fmt6c_cov98.tsv
+chmod 644 ${PLASMID_BLAST_RESULTS_DIR}/*_identicalPlasmids.list &> /dev/null
+rm -f ${PLASMID_BLAST_RESULTS_DIR}/*_identicalPlasmids.list
 
 while read ifn 
 do
 	ACCESSION=`basename "${ifn}" "_fmt6c.tsv"`
-	#${SCRIPTS_DIR}/queryAndSubCovCutoff98-singleHit.awk "${PLASMID_BLAST_RESULTS_DIR}/${ACCESSION}_fmt6c.tsv" > "${PLASMID_BLAST_RESULTS_DIR}/${ACCESSION}_fmt6c_cov98.tsv"
-	python3 ${SCRIPTS_DIR}/queryAndSubCovCutoff98-multiHit.py "${PLASMID_BLAST_RESULTS_DIR}/${ACCESSION}_fmt6c.tsv" > "${PLASMID_BLAST_RESULTS_DIR}/${ACCESSION}_fmt6c_cov98.tsv"
+	python3 ${SCRIPTS_DIR}/queryAndSubCovCutoff98-multiHit.py \
+		"${PLASMID_BLAST_RESULTS_DIR}/${ACCESSION}_fmt6c.tsv" \
+		> "${PLASMID_BLAST_RESULTS_DIR}/${ACCESSION}_identicalPlasmids.list"
 
 	CMD_EXIT=$?
 
@@ -26,7 +27,7 @@ do
 
 done < <(ls -1 "${PLASMID_BLAST_RESULTS_DIR}"/*_fmt6c.tsv)
 
-chmod 444 ${PLASMID_BLAST_RESULTS_DIR}/*_fmt6c_cov98.tsv &> /dev/null
+chmod 444 ${PLASMID_BLAST_RESULTS_DIR}/*_identicalPlasmids.list &> /dev/null
 
 if [ $FAILED -eq 0 ]
 then
@@ -46,3 +47,4 @@ fi
 #	1      2      3      4      5      6      7      8    9    10     11   12     13   14   15   16   17
 #	qseqid sseqid pident length evalue qframe qlen qstart qend sframe slen sstart send qcov scov qseq sseq
 #
+
