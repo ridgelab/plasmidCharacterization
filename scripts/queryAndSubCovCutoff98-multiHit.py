@@ -1,9 +1,3 @@
-# NOTE that the blastn output is a customized format 6. It will be
-# tab-separated and have the following columns:
-#
-#	1      2      3      4      5      6      7    8      9    10     11   12     13   14   15
-#	qseqid sseqid pident length evalue qframe qlen qstart qend sframe slen sstart send qseq sseq
-#
 import sys
 
 def processMultiHits(mh):
