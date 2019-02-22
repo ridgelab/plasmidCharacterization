@@ -4,32 +4,56 @@
 #	1      2      3      4      5      6      7    8      9    10     11   12     13   14   15
 #	qseqid sseqid pident length evalue qframe qlen qstart qend sframe slen sstart send qseq sseq
 #
-# After this is run, it will have two new columns (qcov & scov, cols 14 & 15) and will look like this:
-#
-#	1      2      3      4      5      6      7      8    9    10     11   12     13   14   15   16   17
-#	qseqid sseqid pident length evalue qframe qlen qstart qend sframe slen sstart send qcov scov qseq sseq
-#
-
 import sys
 
-def getModifiedLine(original_fields, query_coverage, subject_coverage):
-	return '\t'.join(original_fields[:14]) + '\t' + str(query_coverage) + '\t' + str(subject_coverage) + '\t' + '\t'.join(original_fields[14:]))
-
 def processMultiHits(mh):
-	# 4 = length, 7 = qlen, 11 = slen, qcov = length / qlen, scov = length / slen
-
+	# return early if mh is empty (shouldn't be necessary)
 	if len(mh) == 0:
-		return
+		return []
 
-	qlen = int(mh[1][7])
-	slen = int(mh[1][11])
+	# set some helpful variables
+	sseqid = mh[0][1]
+	qlen = int(mh[0][6])
+	slen = int(mh[0][10])
 
 	qfilter = [False] * qlen
 	sfilter = [False] * slen
 
+	# scan through recording qcov and scov by position in the q&s filters
+	for h in mh:
+		hqs = int(h[7])
+		hqe = int(h[8])
+		hss = int(h[11])
+		hse = int(h[12])
 
-	
-	
+		qs = hqs
+		qe = hqe
+		if hqs > hqe:
+			qs = hqe
+			qe = hqs
+
+		ss = hss
+		se = hse
+		if hss > hse:
+			ss = hse
+			se = hss
+
+		for i in range(qs - 1, qe, 1):
+			qfilter[i] = True
+
+		for i in range(ss - 1, se, 1):
+			sfilter[i] = True
+
+	# calculate coverage
+	qcov = sum(qfilter) / float(qlen)
+	scov = sum(sfilter) / float(slen)
+
+	# return the additional identical plasmids
+	additional_identical_plasmids = []
+	if qcov >= 0.98 and scov >= 0.98:
+		additional_identical_plasmids.append(sseqid)
+
+	return additional_identical_plasmids # either a list with one item or an empty list
 
 if __name__ == "__main__":
 	
@@ -38,6 +62,8 @@ if __name__ == "__main__":
 		sys.exit(1)
 	
 	ifn = sys.argv[1]
+
+	identical_plasmids = []
 
 	with open(ifn, 'r') as ifd:
 		line = ifd.readline()
@@ -52,29 +78,27 @@ if __name__ == "__main__":
 
 			if qseqid == sseqid:
 				line = ifd.readline()
+				fields = line.rstrip('\n').split('\t')
 				continue
 
 			while line != '' and sseqid == sseqid_of_interest:
 				multi_hits.append(fields)
 				line = ifd.readline()
 				fields = line.rstrip('\n').split('\t')
-				qseqid = fields[0]
-				sseqid = fields[1]
+				if line != '':
+					qseqid = fields[0]
+					sseqid = fields[1]
 
-			processMultiHits(multi_hits)
-
-
+			identical_plasmids.extend(processMultiHits(multi_hits))
 	
-
+	if identical_plasmids: # if it's not an empty list
+		print('\n'.join(sorted(identical_plasmids)))
+	
+	sys.exit(0)
 
 # NOTE that the blastn output is a customized format 6. It will be
 # tab-separated and have the following columns:
 #
 #	1      2      3      4      5      6      7    8      9    10     11   12     13   14   15
 #	qseqid sseqid pident length evalue qframe qlen qstart qend sframe slen sstart send qseq sseq
-#
-# After this is run, it will have two new columns (qcov & scov, cols 14 & 15) and will look like this:
-#
-#	1      2      3      4      5      6      7      8    9    10     11   12     13   14   15   16   17
-#	qseqid sseqid pident length evalue qframe qlen qstart qend sframe slen sstart send qcov scov qseq sseq
 #

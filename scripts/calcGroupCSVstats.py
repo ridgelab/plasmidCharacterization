@@ -362,7 +362,113 @@ def writeSequencingTechnologies(ofd, all_seq_tech_fields):
 			ofd.write(o[4] + ' ' * (c4 - s[4] + 3))
 			ofd.write('\n')
 	else:
-		ofd.write("Sequencing Technologies: uknown\n")
+		ofd.write("Sequencing Technologies: unknown\n")
+
+def writeIdenticalPlasmids(ofd, accessions, plasmids, group_name):
+
+	if len(accessions) != len(plasmids):
+		print("accessions was not the same length as plasmids. This should NEVER happen. Programming logic error.\n", file=sys.stderr)
+		sys.exit(1)
+
+	unique_plasmids = set()
+	identical_plasmids = set()
+	groups = []
+
+	for i in range(0, len(plasmids), 1):
+		a = accessions[i]
+		p = plasmids[i]
+		if len(p) == 1 and p[0] == "NA":
+			unique_plasmids.add(a)
+		else:
+			identical_plasmids.add(a)
+			#this_group = set(list([a] + [p]))
+			this_group = set()
+			this_group.add(a)
+			for x in p:
+				this_group.add(x)
+
+			present = False
+			gi = 0
+			for x in this_group:
+				for gindex in range(0, len(groups), 1):
+					gvals = groups[gindex]
+					if x in gvals:
+						present = True
+						gi = gindex
+						break
+				if present:
+					break
+			if present:
+				for x in this_group:
+					groups[gi].add(x)
+			else:
+				groups.append(this_group)
+
+	not_included = set()
+	all_identical_plasmids = set()
+
+	for group in groups:
+		for x in group:
+			if not x in accessions:
+				not_included.add(x)
+			all_identical_plasmids.add(x)
+
+	group_sizes = sorted(list(map(len, groups)))
+
+	if not group_sizes:
+		group_sizes.append(0)
+	
+	column1 = [ "Plasmids (" + group_name + ")",
+			"Discrete Plasmids",
+			"Indiscrete Plasmids (inside " + group_name + ")",
+			"Indiscrete Plasmids (outside " + group_name + ")",
+			"Indiscrete Plasmids",
+			"Groups of Indiscrete Plasmids",
+			"Group Member Count Min",
+			"Group Member Count Max",
+			"Group Member Count Median",
+			"Group Member Count Mean",
+			"Group Member Count St. Dev." ]
+	
+	column2 = [ str(len(accessions)),
+			str(len(unique_plasmids)), 
+			str(len(identical_plasmids)),
+			str(len(all_identical_plasmids) - len(identical_plasmids)),
+			str(len(all_identical_plasmids)),
+			str(len(groups)),
+			str(min(group_sizes)),
+			str(max(group_sizes)),
+			str(stats.median(group_sizes)),
+			"{0:.3f}".format(stats.mean(group_sizes)),
+			"{0:.3f}".format(stats.stdev(group_sizes)) if len(group_sizes) > 1 else "0" ]
+	
+	c1width = max(map(len, column1))
+
+	ofd.write("Identical Plasmids Summary:\n")
+	for i in range(0, len(column1), 1):
+		spacer = ' ' * (c1width - len(column1[i]))
+		ofd.write(f"\t{spacer}{column1[i]}: {column2[i]}\n")
+
+	ofd.write("\nIdentical Plasmids Groups:")
+
+	group_sizes.sort(reverse=True)
+	groups.sort(key=len, reverse=True)
+
+	column1 = [ "Discrete (" + group_name + ")" ]
+	column2 = [ sorted(list(unique_plasmids)) ]
+
+	for i in range(0, len(groups), 1):
+		column1.append("Indiscrete Group #" + str(i+1))
+		column2.append(sorted(list(groups[i])))
+	
+	c1width = max(map(len, column1))
+	for i in range(0, len(column1), 1):
+		spacer = ' ' * (c1width - len(column1[i]))
+		ofd.write(f"\n\t{spacer}{column1[i]}:\n")
+		for j in range(0,len(column2[i]), 3):
+			ofd.write("\t\t" + "  ".join(column2[i][j:j+3]) + '\n')
+
+	return
 
 
 ########
@@ -390,10 +496,12 @@ if __name__ == "__main__":
 
 			# set some handy vars
 			total_number_of_plasmids = 0
+			plasmid_accessions = []
 			plasmid_lengths = []
 			all_inc_groups = {}
 			all_group_structure_fields = []
 			all_seq_tech_fields = []
+			ident_plasmids_fields = []
 
 			# loop through each plasmid_record (line) in the input file
 			for plasmid_record in ifd:
@@ -404,6 +512,7 @@ if __name__ == "__main__":
 				fields = plasmid_record.rstrip('\n').rstrip('"').lstrip('"').split("\",\"")
 
 				plasmid_accession = fields[0].strip('"')
+				ident_plasmids =  fields[1].strip('"').strip().split(',')
 				seq_tech_fields = list(map(lambda field: field.strip('"'), fields[6:17]))
 				plasmid_length = int(fields[17].strip('"'))
 				inc_groups = fields[44].strip('"').split(',')
@@ -418,11 +527,17 @@ if __name__ == "__main__":
 						all_inc_groups[inc_group] = []
 					all_inc_groups[inc_group].append(plasmid_length)
 
+				# capture plasmid accession info
+				plasmid_accessions.append(plasmid_accession)
+
 				# capture info about group structure
 				all_group_structure_fields.append(group_structure_fields)
 
 				# capture info about sequencing technologies
 				all_seq_tech_fields.append(seq_tech_fields)
+				
+				# capture info about identical plasmids
+				ident_plasmids_fields.append(ident_plasmids)
 
 
 		# write stuff to the output file
@@ -435,7 +550,7 @@ if __name__ == "__main__":
 		ofd.write('\n') # extra newline
 
 		#	group plasmids size
-		ofd.write("Plasmids Summary:\n")
+		ofd.write("Plasmid Lengths Summary:\n")
 		ofd.write("\t     Min: " + str(min(plasmid_lengths)) + '\n')
 		ofd.write("\t     Max: " + str(max(plasmid_lengths)) + '\n')
 		ofd.write("\t  Median: " + str(stats.median(plasmid_lengths)) + '\n')
@@ -454,6 +569,10 @@ if __name__ == "__main__":
 
 		#	Sequencing Technologies
 		writeSequencingTechnologies(ofd, all_seq_tech_fields)
+		ofd.write('\n') # extra newline
+
+		#	Identical Plasmids
+		writeIdenticalPlasmids(ofd, plasmid_accessions, ident_plasmids_fields, group_name)
 		ofd.write('\n') # extra newline
 
 
