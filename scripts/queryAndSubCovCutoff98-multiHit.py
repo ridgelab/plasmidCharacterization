@@ -6,6 +6,7 @@ def processMultiHits(mh):
 		return []
 
 	# set some helpful variables
+	qseqid = mh[0][0]
 	sseqid = mh[0][1]
 	qlen = int(mh[0][6])
 	slen = int(mh[0][10])
@@ -39,54 +40,72 @@ def processMultiHits(mh):
 			sfilter[i] = True
 
 	# calculate coverage
-	qcov = sum(qfilter) / float(qlen)
-	scov = sum(sfilter) / float(slen)
+	qcount = sum(qfilter)
+	scount = sum(sfilter)
+	qcov = qcount / float(qlen)
+	scov = scount / float(slen)
 
 	# return the additional identical plasmids
-	additional_identical_plasmids = []
+	additional_identical_plasmid = None
 	if qcov >= 0.98 and scov >= 0.98:
-		additional_identical_plasmids.append(sseqid)
+		additional_identical_plasmid = sseqid
+		print("qseqid:", qseqid, file=sys.stderr)
+		print("sseqid:", sseqid, file=sys.stderr)
+		print("qcov:", qcov, file=sys.stderr)
+		print("scov:", scov, file=sys.stderr)
 
-	return additional_identical_plasmids # either a list with one item or an empty list
+	return additional_identical_plasmid, qcount, qlen, qcov, scount, slen, scov # additinal...plasmid= either one sseqid or None
 
 if __name__ == "__main__":
 	
-	if len(sys.argv) != 2:
-		sys.stderr.write("ERROR: Incorrect args. 1- input blast results tsv file.\n")
+	if len(sys.argv) != 4:
+		sys.stderr.write("ERROR: Incorrect args.\n\t1- input blast results tsv file.\n\t2- output ident plasmids list file.\n\t3- output coverage info tsv file.\n\n")
 		sys.exit(1)
 	
-	ifn = sys.argv[1]
+	ifn = sys.argv[1] # input file name
+	olfn = sys.argv[2] # output list file name
+	ocifn = sys.argv[3] # output coverage info filename
 
 	identical_plasmids = []
+	records = []
 
-	with open(ifn, 'r') as ifd:
-		line = ifd.readline()
-		fields = line.rstrip('\n').split('\t')
-
-		while line != '':
-			multi_hits = [] # 2d array: all the lines (sets of fields) that associate with a pairwise sequence blast
-
-			qseqid = fields[0]
-			sseqid = fields[1]
-			sseqid_of_interest = str(sseqid)
-
-			if qseqid == sseqid:
+	with open(olfn, 'w') as olfd:
+		with open(ocifn, 'w') as ocifd:
+			with open(ifn, 'r') as ifd:
 				line = ifd.readline()
 				fields = line.rstrip('\n').split('\t')
-				continue
 
-			while line != '' and sseqid == sseqid_of_interest:
-				multi_hits.append(fields)
-				line = ifd.readline()
-				fields = line.rstrip('\n').split('\t')
-				if line != '':
+				while line != '':
+					multi_hits = [] # 2d array: all the lines (sets of fields) that associate with a pairwise sequence blast
+
 					qseqid = fields[0]
 					sseqid = fields[1]
+					sseqid_of_interest = str(sseqid)
 
-			identical_plasmids.extend(processMultiHits(multi_hits))
-	
-	if identical_plasmids: # if it's not an empty list
-		print('\n'.join(sorted(identical_plasmids)))
+					if qseqid == sseqid:
+						line = ifd.readline()
+						fields = line.rstrip('\n').split('\t')
+						continue
+
+					while line != '' and sseqid == sseqid_of_interest:
+						multi_hits.append(fields)
+						line = ifd.readline()
+						fields = line.rstrip('\n').split('\t')
+						if line != '':
+							qseqid = fields[0]
+							sseqid = fields[1]
+
+					#identical_plasmids.extend(processMultiHits(multi_hits))
+					addtl_ident_plasmid, qcount, qlen, qcov, scount, slen, scov = processMultiHits(multi_hits)
+					if addtl_ident_plasmid: # the item isn't empty
+						identical_plasmids.append(addtl_ident_plasmid)
+						records.append((qseqid, qcount, qlen, qcov, addtl_ident_plasmid, scount, slen, scov))
+			
+			if identical_plasmids: # if it's not an empty list
+				print('\n'.join(sorted(identical_plasmids)), file=olfd)
+				print("qseqid", "qcount", "qlen", "qcov", "sseqid", "scount", "slen", "scov", sep='\t', file=ocifd)
+				for record in records:
+					print(*record, sep='\t', file=ocifd)
 	
 	sys.exit(0)
 

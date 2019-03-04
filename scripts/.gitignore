@@ -22,6 +22,7 @@
 !18-createGroupCSVsFromPlasmidCSVs.sh
 !19-createGroupMatchesFromPlasmidMatches.sh
 !20-calcGroupCSVstats.sh
+!21-createDistMatrix.sh
 !addFamCol.awk
 !blast.sh
 !blastPlasmids.sh

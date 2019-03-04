@@ -12,7 +12,8 @@ extractIdenticalPlasmids()
 
 	python3 ${SCRIPTS_DIR}/queryAndSubCovCutoff98-multiHit.py \
 		"${PLASMID_BLAST_RESULTS_DIR}/${ACCESSION}_fmt6c.tsv" \
-		> "${PLASMID_BLAST_RESULTS_DIR}/${ACCESSION}_identicalPlasmids.list"
+		"${PLASMID_BLAST_RESULTS_DIR}/${ACCESSION}_identicalPlasmids.list" \
+		"${PLASMID_BLAST_RESULTS_DIR}/${ACCESSION}_covInfo.tsv"
 
 	local CMD_EXIT
 	CMD_EXIT=$?
