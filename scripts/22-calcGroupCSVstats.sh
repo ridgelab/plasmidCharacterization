@@ -2,7 +2,7 @@
 
 MAIN_DIR="$(cd $( dirname "${BASH_SOURCE[0]}" )/..; pwd)"; cd ${MAIN_DIR}
 SCRIPTS_DIR="${MAIN_DIR}/scripts"
-GROUPS_DIR="${MAIN_DIR}/data/groups"
+GROUPS_DIR="${MAIN_DIR}/data/groups/keep"
 GROUP_CSV_DIR="${MAIN_DIR}/data/group_csv"
 GROUP_STATS_DIR="${MAIN_DIR}/data/group_stats"
 
@@ -31,7 +31,7 @@ do
 		FAILED=`bc <<< "${FAILED}+1"`
 	fi
 
-done < <(ls -1 "${GROUPS_DIR}"/*.list)
+done < <(ls -1 "${GROUPS_DIR}"/*.list | grep -v "keep.list")
 
 chmod 444 ${GROUP_STATS_DIR}/*.stats &> /dev/null
 

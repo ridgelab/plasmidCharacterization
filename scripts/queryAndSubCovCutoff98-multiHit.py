@@ -69,44 +69,47 @@ if __name__ == "__main__":
 	identical_plasmids = []
 	records = []
 
-	with open(olfn, 'w') as olfd:
-		with open(ocifn, 'w') as ocifd:
-			with open(ifn, 'r') as ifd:
+	# process the input
+	with open(ifn, 'r') as ifd:
+		line = ifd.readline()
+		fields = line.rstrip('\n').split('\t')
+
+		while line != '':
+			multi_hits = [] # 2d array: all the lines (sets of fields) that associate with a pairwise sequence blast
+
+			qseqid = fields[0]
+			sseqid = fields[1]
+			sseqid_of_interest = str(sseqid)
+
+			if qseqid == sseqid:
 				line = ifd.readline()
 				fields = line.rstrip('\n').split('\t')
+				continue
 
-				while line != '':
-					multi_hits = [] # 2d array: all the lines (sets of fields) that associate with a pairwise sequence blast
-
+			while line != '' and sseqid == sseqid_of_interest:
+				multi_hits.append(fields)
+				line = ifd.readline()
+				fields = line.rstrip('\n').split('\t')
+				if line != '':
 					qseqid = fields[0]
 					sseqid = fields[1]
-					sseqid_of_interest = str(sseqid)
 
-					if qseqid == sseqid:
-						line = ifd.readline()
-						fields = line.rstrip('\n').split('\t')
-						continue
+			#identical_plasmids.extend(processMultiHits(multi_hits))
+			addtl_ident_plasmid, qcount, qlen, qcov, scount, slen, scov = processMultiHits(multi_hits)
+			if addtl_ident_plasmid: # the item isn't empty
+				identical_plasmids.append(addtl_ident_plasmid)
+				records.append((qseqid, qcount, qlen, qcov, addtl_ident_plasmid, scount, slen, scov))
 
-					while line != '' and sseqid == sseqid_of_interest:
-						multi_hits.append(fields)
-						line = ifd.readline()
-						fields = line.rstrip('\n').split('\t')
-						if line != '':
-							qseqid = fields[0]
-							sseqid = fields[1]
-
-					#identical_plasmids.extend(processMultiHits(multi_hits))
-					addtl_ident_plasmid, qcount, qlen, qcov, scount, slen, scov = processMultiHits(multi_hits)
-					if addtl_ident_plasmid: # the item isn't empty
-						identical_plasmids.append(addtl_ident_plasmid)
-						records.append((qseqid, qcount, qlen, qcov, addtl_ident_plasmid, scount, slen, scov))
-			
+	# write the output
+	with open(olfn, 'w') as olfd:
+		with open(ocifn, 'w') as ocifd:
+			print("qseqid", "qcount", "qlen", "qcov", "sseqid", "scount", "slen", "scov", sep='\t', file=ocifd) # write the header
 			if identical_plasmids: # if it's not an empty list
 				print('\n'.join(sorted(identical_plasmids)), file=olfd)
-				print("qseqid", "qcount", "qlen", "qcov", "sseqid", "scount", "slen", "scov", sep='\t', file=ocifd)
 				for record in records:
 					print(*record, sep='\t', file=ocifd)
 	
+
 	sys.exit(0)
 
 # NOTE that the blastn output is a customized format 6. It will be

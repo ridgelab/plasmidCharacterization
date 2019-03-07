@@ -6,8 +6,8 @@
 def handleArgs():
 	import sys
 
-	if len(sys.argv) != 9:
-		sys.stderr.write("\n\tERROR: You must provide 8 arguments\n\t\t1- plasmid accession\n\t\t2- output csv dir\n\t\t3- input fasta dir\n\t\t4- input matches dir\n\t\t5- input incompatibility groups blast output dir\n\t\t6- input source info tsv file\n\t\t7- input plasmid blast results dir\n\t\t8- input sequence techs tsv\n\n")
+	if len(sys.argv) != 10:
+		sys.stderr.write("\n\tERROR: You must provide 8 arguments\n\t\t1- plasmid accession\n\t\t2- output csv dir\n\t\t3- input fasta dir\n\t\t4- input matches dir\n\t\t5- input incompatibility groups blast output dir\n\t\t6- input source info tsv file\n\t\t7- input plasmid blast results dir\n\t\t8- input discarded plasmids list\n\t\t9- input sequence techs tsv\n\n")
 		sys.exit(1)
 	
 	plasmid_accession = sys.argv[1]
@@ -17,9 +17,10 @@ def handleArgs():
 	input_incompatibility_groups_blast_output_dir = sys.argv[5].rstrip('/')
 	input_source_info_fn = sys.argv[6]
 	input_blast_results_dir = sys.argv[7].rstrip('/')
-	input_sequence_techs_fn = sys.argv[8]
+	input_discarded_plasmids_fn = sys.argv[8]
+	input_sequence_techs_fn = sys.argv[9]
 
-	return plasmid_accession, output_csv_dir, input_fasta_and_length_dir, input_matches_dir, input_incompatibility_groups_blast_output_dir, input_source_info_fn, input_blast_results_dir, input_sequence_techs_fn
+	return plasmid_accession, output_csv_dir, input_fasta_and_length_dir, input_matches_dir, input_incompatibility_groups_blast_output_dir, input_source_info_fn, input_blast_results_dir, input_discarded_plasmids_fn, input_sequence_techs_fn
 
 def CSVify(some_str):
 	return '"' + some_str + '"'
@@ -170,12 +171,17 @@ def extractSourceInfo(input_source_info_fn, accession):
 			if acc_num == accession:
 				return organism, isolation_source, country, collection_date
 
-def getIdenticalPlasmids(input_identical_plasmids_fn):
-	identical_plasmids = ''
+def getIdenticalPlasmids(input_identical_plasmids_fn, input_discarded_plsmids_fn):
+	discarded_plasmids = []
+	with open(input_discarded_plasmids_fn, 'r') as ifd:
+		discarded_plasmids = [line.rstrip('\n') for line in ifd]
+		
+	identical_plasmids = []
 	with open(input_identical_plasmids_fn, 'r') as ifd:
-		identical_plasmids = ifd.read().rstrip('\n').replace('\n', ',')
+		identical_plasmids = [line.rstrip('\n') for line in ifd]
 	
-	return identical_plasmids if identical_plasmids else "NA"
+	identical_non_discarded_plasmids = ','.join([plasmid for plasmid in identical_plasmids if not plasmid in discarded_plasmids])
+	return identical_non_discarded_plasmids if identical_non_discarded_plasmids else "NA"
 
 def extractSeqTechInfo(input_sequencing_technology_fn, plasmid_accession):
 	with open(input_sequencing_technology_fn, 'r') as ifd:
@@ -194,7 +200,7 @@ if __name__ == "__main__":
 	import sys
 	
 	# handle args
-	plasmid_accession, output_csv_dir, input_fasta_and_length_dir, input_matches_dir, input_incompatibility_groups_blast_output_dir, input_source_info_fn, input_blast_results_dir, input_sequence_techs_fn = handleArgs()
+	plasmid_accession, output_csv_dir, input_fasta_and_length_dir, input_matches_dir, input_incompatibility_groups_blast_output_dir, input_source_info_fn, input_blast_results_dir, input_discarded_plasmids_fn, input_sequence_techs_fn = handleArgs()
 
 	# set some helpful vars
 	ocn = output_csv_dir + '/' + plasmid_accession + ".csv"
@@ -204,6 +210,7 @@ if __name__ == "__main__":
 	iign = input_incompatibility_groups_blast_output_dir + '/' + plasmid_accession + "_families.list"
 	isin = input_source_info_fn
 	iipn = input_blast_results_dir + '/' + plasmid_accession + "_identicalPlasmids.list"
+	idpn = input_discarded_plasmids_fn
 	istn = input_sequence_techs_fn
 
 	csv_header = [ "Accession #", 
@@ -230,7 +237,7 @@ if __name__ == "__main__":
 	plasmid_accession_output_str = CSVify(plasmid_accession)
 
 	#	get identical plasmid accession #s
-	identical_plasmids = getIdenticalPlasmids(iipn)
+	identical_plasmids = getIdenticalPlasmids(iipn,idpn)
 	identical_plasmids_output_str = CSVify(identical_plasmids)
 
 	#	get source info

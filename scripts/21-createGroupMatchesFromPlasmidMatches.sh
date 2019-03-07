@@ -2,7 +2,7 @@
 
 MAIN_DIR="$(cd $( dirname "${BASH_SOURCE[0]}" )/..; pwd)"; cd ${MAIN_DIR}
 PLASMID_MATCHES_DIR="${MAIN_DIR}/data/plasmid_matches"
-GROUPS_DIR="${MAIN_DIR}/data/groups"
+GROUPS_DIR="${MAIN_DIR}/data/groups/keep"
 GROUP_MATCHES_DIR="${MAIN_DIR}/data/group_matches"
 
 FAILED=0
@@ -47,7 +47,7 @@ do
 		FAILED=`bc <<< "${FAILED}+1"`
 	fi
 
-done < <(ls -1 "${GROUPS_DIR}"/*.list)
+done < <(ls -1 "${GROUPS_DIR}"/*.list | grep -v "keep.list")
 
 chmod 444 ${GROUP_MATCHES_DIR}/*_matches.tsv &> /dev/null
 

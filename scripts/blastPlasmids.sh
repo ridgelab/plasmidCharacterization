@@ -15,7 +15,7 @@ ${BLAST_BIN_PATH}/blastn \
 	-strand both \
 	-task blastn \
 	-db ${PLASMIDS_DB} \
-	-out ${BLAST_RESULT_DIR}/${ACCESSION}_fmt6c.tsv \
+	-out ${BLAST_RESULT_DIR}/${ACCESSION}_fmt6c_5000.tsv \
 	-outfmt "6 qseqid sseqid pident length evalue qframe qlen qstart qend sframe slen sstart send qseq sseq" \
 	-num_threads ${THREADS} \
 	-perc_identity 98

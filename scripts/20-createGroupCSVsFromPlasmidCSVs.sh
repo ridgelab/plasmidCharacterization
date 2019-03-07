@@ -2,7 +2,7 @@
 
 MAIN_DIR="$(cd $( dirname "${BASH_SOURCE[0]}" )/..; pwd)"; cd ${MAIN_DIR}
 PLASMID_CSV_DIR="${MAIN_DIR}/data/plasmid_csv"
-GROUPS_DIR="${MAIN_DIR}/data/groups"
+GROUPS_DIR="${MAIN_DIR}/data/groups/keep"
 GROUP_CSV_DIR="${MAIN_DIR}/data/group_csv"
 
 FAILED=0
@@ -49,7 +49,7 @@ do
 		FAILED=`bc <<< "${FAILED}+1"`
 	fi
 
-done < <(ls -1 "${GROUPS_DIR}"/*.list)
+done < <(ls -1 "${GROUPS_DIR}"/*.list | grep -v "keep.list")
 
 chmod 444 ${GROUP_CSV_DIR}/*.csv &> /dev/null
 

@@ -9,7 +9,7 @@ PLASMID_BLAST_RESULTS_DIR="${DATA_DIR}/plasmid_blast_results"
 FAILED=0
 
 chmod 644 ${PLASMID_BLAST_RESULTS_DIR}/*_fmt6c.tsv &> /dev/null
-rm -f ${PLASMID_BLAST_RESULTS_DIR}/*_fmt6c.tsv
+#rm -f ${PLASMID_BLAST_RESULTS_DIR}/*_fmt6c.tsv
 
 while read ifn 
 do

@@ -9,6 +9,7 @@ INCOMP_BLAST_RESULTS_DIR="${MAIN_DIR}/data/incompatibility_groups/blast_results"
 SOURCE_INFO_FN="${MAIN_DIR}/data/plasmid_sourceInfo/sourceInfo.tsv"
 PLASMID_BLAST_RESULTS_DIR="${MAIN_DIR}/data/plasmid_blast_results"
 SEQ_TECHS_FN="${MAIN_DIR}/data/plasmid_seqTech/seqTech.tsv"
+DISCARDED_PLASMIDS_FN="${MAIN_DIR}/data/groups/discard/discard.list"
 
 FAILED=0
 
@@ -27,6 +28,7 @@ do
 		"${INCOMP_BLAST_RESULTS_DIR}" \
 		"${SOURCE_INFO_FN}" \
 		"${PLASMID_BLAST_RESULTS_DIR}" \
+		"${DISCARDED_PLASMIDS_FN}" \
 		"${SEQ_TECHS_FN}"
 
 	COMMAND_EXIT=$?
