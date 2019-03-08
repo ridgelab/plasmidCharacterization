@@ -22,16 +22,16 @@ distInfo()
 	
 	ACC1="${1}"
 	ACC2="${2}"
-	ACC1_FILE="${PLASMID_BLAST_RESULTS_DIR}/${ACC1}_covInfo.tsv"
+	ACC1_FILE="${PLASMID_BLAST_RESULTS_DIR}/${ACC1}_covInfo_concordant.tsv"
 	DIST_FILE="${TREE_DIR}/${ACC1}.dist"
 	CMD_EXIT=0
 	COLS=""
 
 	# create the columns
-	while read ifn2
+	while read ACC2
 	do
-		ACC2=`basename "${ifn2}" "_covInfo.tsv"`
-		ifn2="${PLASMID_BLAST_RESULTS_DIR}/${ifn2}"
+		#ACC2=`basename "${ifn2}" "_covInfo_concordant.tsv"`
+		#ifn2="${PLASMID_BLAST_RESULTS_DIR}/${ifn2}"
 
 		DISCARD_CNT=`grep -c "${ACC2}" "${DISCARD_FILE}"`
 		if [ $DISCARD_CNT -eq 0 ]
@@ -61,7 +61,8 @@ distInfo()
 			fi
 		fi
 
-	done < <(find "${PLASMID_BLAST_RESULTS_DIR}" -mindepth 1 -maxdepth 1 -type f -name '*_covInfo.tsv' -printf '%f\n' | sort -t '_' -k 1,1V)
+	done < <(cat "${PLASMID_BLAST_RESULTS_DIR}"/*_concordant.list | sort -V | uniq)
+	#done < <(find "${PLASMID_BLAST_RESULTS_DIR}" -mindepth 1 -maxdepth 1 -type f -name '*_covInfo_concordant.tsv' -printf '%f\n' | sort -t '_' -k 1,1V)
 
 	# write the columns
 	printf "${COLS}" \
@@ -82,10 +83,10 @@ rm -f "${TREE_DIR}"/*.dist &> /dev/null
 
 FAILED=0
 
-while read ifn
+while read ACCESSION
 do
-	ACCESSION=`basename "${ifn}" "_covInfo.tsv"`
-	ifn="${PLASMID_BLAST_RESULTS_DIR}/${ifn}"
+	#ACCESSION=`basename "${ifn}" "_covInfo_concordant.tsv"`
+	#ifn="${PLASMID_BLAST_RESULTS_DIR}/${ifn}"
 
 	DISCARD_COUNT=`grep -c "${ACCESSION}" "${DISCARD_FILE}"`
 	if [ $DISCARD_COUNT -eq 0 ]
@@ -106,8 +107,8 @@ do
 		done
 	fi
 
-
-done < <(find "${PLASMID_BLAST_RESULTS_DIR}" -mindepth 1 -maxdepth 1 -type f -name '*_covInfo.tsv' -printf '%f\n' | sort -t '_' -k 1,1V)
+done < <(cat "${PLASMID_BLAST_RESULTS_DIR}"/*_concordant.list | sort -V | uniq)
+#done < <(find "${PLASMID_BLAST_RESULTS_DIR}" -mindepth 1 -maxdepth 1 -type f -name '*_covInfo_concordant.tsv' -printf '%f\n' | sort -t '_' -k 1,1V)
 
 wait `jobs -p`
 
@@ -123,11 +124,19 @@ rm -f ${TREE_DIR}/dist_matrix.tsv &> /dev/null
 
 # write the title line
 TMP="/tmp/$$"
-ls -1 "${PLASMID_BLAST_RESULTS_DIR}"/*_covInfo.tsv \
-        | sed -r 's,^.+/(.+)_covInfo\.tsv$,\1,' \
-        | sort -V \
+#	 all accessions
+#ls -1 "${PLASMID_BLAST_RESULTS_DIR}"/*_covInfo_concordant.tsv \
+#        | sed -r 's,^.+/(.+)_covInfo_concordant\.tsv$,\1,' \
+#        | sort -V \
+#        > "${TMP}"
+
+# 	identical accessions only
+cat "${PLASMID_BLAST_RESULTS_DIR}"/*_concordant.list \
+	| sort -V \
+	| uniq \
         > "${TMP}"
 
+# 	remove the ones we aren't keeping
 comm --nocheck-order -2 -3 "${TMP}" <(sort -V "${DISCARD_FILE}") \
         | tr '\n' '\t' \
         | sed -r 's,\t$,\n,' \
@@ -137,15 +146,17 @@ comm --nocheck-order -2 -3 "${TMP}" <(sort -V "${DISCARD_FILE}") \
 rm -f "${TMP}"
 
 # write the remaining lines
-while read ifn 
+while read ACCESSION
 do
-	ACCESSION=`basename "${ifn}" ".dist"`
-	ifn="${TREE_DIR}/${ifn}"
+	#ACCESSION=`basename "${ifn}" ".dist"`
+	#ifn="${TREE_DIR}/${ifn}"
+	ifn="${TREE_DIR}/${ACCESSION}.dist"
 
 	printf "${ACCESSION}\t" >> "${TREE_DIR}/dist_matrix.tsv"
 	cat "${ifn}" >> "${TREE_DIR}/dist_matrix.tsv"
 
-done < <(find "${TREE_DIR}" -mindepth 1 -maxdepth 1 -type f -name '*.dist' -printf '%f\n' | sort -t '.' -k 1,1V)
+done < <(comm --nocheck-order -2 -3 <(cat "${PLASMID_BLAST_RESULTS_DIR}"/*_concordant.list | sort -V | uniq) <(sort -V "${DISCARD_FILE}"))
+#done < <(find "${TREE_DIR}" -mindepth 1 -maxdepth 1 -type f -name '*.dist' -printf '%f\n' | sort -t '.' -k 1,1V)
 
 chmod 444 ${TREE_DIR}/dist_matrix.tsv &> /dev/null
 

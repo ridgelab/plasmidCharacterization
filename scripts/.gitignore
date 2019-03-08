@@ -35,6 +35,7 @@
 !extractOriginSeqFromGBtoFasta.awk
 !extractPlasmidSearchRegions.py
 !filterBestResults.py
+!fixIdenticalPlasmidsNonConcordance.py
 !formatIncGroupFasta.awk
 !generatePlasmidCSV.py
 !identifyPlasmidMatches.py

@@ -209,7 +209,7 @@ if __name__ == "__main__":
 	mfn = input_matches_dir + '/' + plasmid_accession + "_matches.tsv"
 	iign = input_incompatibility_groups_blast_output_dir + '/' + plasmid_accession + "_families.list"
 	isin = input_source_info_fn
-	iipn = input_blast_results_dir + '/' + plasmid_accession + "_identicalPlasmids.list"
+	iipn = input_blast_results_dir + '/' + plasmid_accession + "_identicalPlasmids_concordant.list"
 	idpn = input_discarded_plasmids_fn
 	istn = input_sequence_techs_fn
 
