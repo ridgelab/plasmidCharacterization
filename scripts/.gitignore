@@ -25,6 +25,8 @@
 !21-createGroupMatchesFromPlasmidMatches.sh
 !22-calcGroupCSVstats.sh
 !23-createDistMatrix.sh
+!24-createDistTree.sh
+!25-addTreeLeafLabels.sh
 !addFamCol.awk
 !blast.sh
 !blastPlasmids.sh
@@ -39,9 +41,9 @@
 !formatIncGroupFasta.awk
 !generatePlasmidCSV.py
 !identifyPlasmidMatches.py
+!modifyLeafLabels.py
 !queryAndSubCovCutoff98-multiHit.py
 !sequesterSeqTech.awk
 !snagSourceInfo.awk
 !splitMultiGB.awk
 !subCovCutoff60.awk
-

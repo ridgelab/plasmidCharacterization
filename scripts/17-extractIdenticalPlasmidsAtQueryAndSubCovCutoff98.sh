@@ -65,7 +65,6 @@ fi
 
 exit ${FAILED} # 0: success, 1+: failed
 
-
 # NOTE that the blastn output is a customized format 6. It will be
 # tab-separated and have the following columns:
 #

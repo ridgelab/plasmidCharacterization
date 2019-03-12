@@ -10,6 +10,7 @@ SOURCE_INFO_FN="${MAIN_DIR}/data/plasmid_sourceInfo/sourceInfo.tsv"
 PLASMID_BLAST_RESULTS_DIR="${MAIN_DIR}/data/plasmid_blast_results"
 SEQ_TECHS_FN="${MAIN_DIR}/data/plasmid_seqTech/seqTech.tsv"
 DISCARDED_PLASMIDS_FN="${MAIN_DIR}/data/groups/discard/discard.list"
+KEEP_FILE="${MAIN_DIR}/data/groups/keep/keep.list"
 
 FAILED=0
 
@@ -17,9 +18,8 @@ mkdir -p ${PLASMID_CSV_DIR} &> /dev/null
 chmod 644 ${PLASMID_CSV_DIR}/*.csv &> /dev/null
 rm -f ${PLASMID_CSV_DIR}/*.csv
 
-while read ifn 
+while read ACCESSION
 do
-	ACCESSION=`basename "${ifn}" ".fasta"`
 	python3 ${SCRIPTS_DIR}/generatePlasmidCSV.py \
 		"${ACCESSION}" \
 		"${PLASMID_CSV_DIR}" \
@@ -41,7 +41,7 @@ do
 		FAILED=`bc <<< "${FAILED}+1"`
 	fi
 
-done < <(ls -1 "${PLASMID_FASTA_DIR}"/*.fasta)
+done < "${KEEP_FILE}"
 
 chmod 444 ${PLASMID_CSV_DIR}/*.csv &> /dev/null
 

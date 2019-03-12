@@ -5,15 +5,15 @@ SCRIPTS_DIR="${MAIN_DIR}/scripts"
 DATA_DIR="${MAIN_DIR}/data"
 PLASMID_FASTA_DIR="${DATA_DIR}/plasmid_fasta"
 PLASMID_BLAST_RESULTS_DIR="${DATA_DIR}/plasmid_blast_results"
+KEEP_FILE="${DATA_DIR}/groups/keep/keep.list"
 
 FAILED=0
 
 chmod 644 ${PLASMID_BLAST_RESULTS_DIR}/*_fmt6c.tsv &> /dev/null
 #rm -f ${PLASMID_BLAST_RESULTS_DIR}/*_fmt6c.tsv
 
-while read ifn 
+while read ACCESSION
 do
-	ACCESSION=`basename "${ifn}" ".fasta"`
 	${SCRIPTS_DIR}/blastPlasmids.sh "${ACCESSION}"
 
 	BLAST_EXIT=$?
@@ -26,7 +26,7 @@ do
 		FAILED=`bc <<< "${FAILED}+1"`
 	fi
 
-done < <(ls -1 "${PLASMID_FASTA_DIR}"/*.fasta)
+done < "${KEEP_FILE}"
 
 chmod 444 ${PLASMID_BLAST_RESULTS_DIR}/*_fmt6c.tsv &> /dev/null
 
