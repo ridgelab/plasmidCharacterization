@@ -49,10 +49,6 @@ def processMultiHits(mh):
 	additional_identical_plasmid = None
 	if qcov >= 0.98 and scov >= 0.98:
 		additional_identical_plasmid = sseqid
-		#print("qseqid:", qseqid, file=sys.stderr)
-		#print("sseqid:", sseqid, file=sys.stderr)
-		#print("qcov:", qcov, file=sys.stderr)
-		#print("scov:", scov, file=sys.stderr)
 
 	return additional_identical_plasmid, qcount, qlen, qcov, scount, slen, scov # additinal...plasmid= either one sseqid or None
 
@@ -94,7 +90,6 @@ if __name__ == "__main__":
 					qseqid = fields[0]
 					sseqid = fields[1]
 
-			#identical_plasmids.extend(processMultiHits(multi_hits))
 			addtl_ident_plasmid, qcount, qlen, qcov, scount, slen, scov = processMultiHits(multi_hits)
 			if addtl_ident_plasmid: # the item isn't empty
 				identical_plasmids.append(addtl_ident_plasmid)
