@@ -26,7 +26,7 @@ in the next paragraph.
 If you wish to have different key terms, you will need to edit the regular
 expressions found in scripts/identifyPlasmidMatches.py. Depending on what you
 are searching for, you may need a different search heirarchy altogether.
-Presently, Beta-lactamase Special is a subset of of Beta-lactamase. It is, in
+Presently, Beta-lactamase Special is a subset of Beta-lactamase. It is, in
 turn, a subset of Antimicrobial Resistance. Thus, a find in Beta-lactamase
 Special will incrememnt the count for itself and its parents. Similarly, DNA
 Maintenance Special is a subset of DNA Maintenance. Otherwise, the search
