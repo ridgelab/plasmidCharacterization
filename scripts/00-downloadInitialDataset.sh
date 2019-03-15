@@ -68,7 +68,7 @@ DATA_DIR="${MAIN_DIR}/data"
 ORIG_GB_DIR="${DATA_DIR}/original_gb"
 ORIG_GB_CUSTOM_DIR="${ORIG_GB_DIR}/custom_groups"
 
-rm -rf "${ORIG_GB_DIR}" &> /dev/null
+rm -rf "${ORIG_GB_DIR}"/* &> /dev/null
 mkdir -p "${ORIG_GB_CUSTOM_DIR}" &> /dev/null
 
 RECORDS=(
@@ -118,6 +118,9 @@ do
 	GROUP=`printf "$record" | cut -d ':' -f 1`
 	ACC_LIST=`printf "$record" | cut -d ':' -f 2`
 
+	printf "%s: %s\n" \
+		"Currently attempting" \
+
 	curl "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi" \
 		--data-urlencode "db=nuccore" \
 		--data-urlencode "rettype=gbwithparts" \
@@ -130,7 +133,19 @@ do
 		-H "Connection: keep-alive" \
 		-o "${ORIG_GB_DIR}/${GROUP}.gb"
 	
-	CMD_EXIT=$(bc <<< "${CMD_EXIT}+$?")
+	CURL_EXIT=$?
+	STATUS="succeeded"
+
+	if [ $CURL_EXIT -ne 0 ]
+	then
+		STATUS="failed"
+		CMD_EXIT=$(bc <<< "${CMD_EXIT}+1")
+	fi
+
+	printf "%s: %s\n" \
+		"${GROUP}" \
+		"${STATUS}" \
+		1>&2
 
 done
 
