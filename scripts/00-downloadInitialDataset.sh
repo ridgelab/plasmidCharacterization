@@ -57,7 +57,6 @@ else
 		" This should not be possible. Exiting now."
 	exit 1
 fi
-exit 0
 
 ############
 ### MAIN ###
