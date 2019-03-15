@@ -12,12 +12,11 @@ printf "%s\n" \
 	"the GenBank files as described in our paper (see README). To reduce the barrier" \
 	"of reproducibility, we have included this script to ensure you can get the same" \
 	"set of input files we downloaded and curated. If you wish to proceed, the" \
-	"contents of the data/original_gb and data/original_incompatibility_groups" \
-	"directories will be removed. If you do not wish to have those directories" \
-	"cleared and populated with the initial data from our analysis, please type \`no'" \
-	"at the prompt or hit ^C (ctrl-C) now. Otherwise, type \`yes' at the prompt." \
-	"The prompt will not stop seeking input until only either \`no' or \`yes' is" \
-	"provided." \
+	"contents of the data/original_gb directory will be removed. If you do not wish" \
+	"to have those directories cleared and populated with the initial data from our" \
+	"analysis, please type \`no' at the prompt or hit ^C (ctrl-C) now. Otherwise," \
+	"type \`yes' at the prompt. The prompt will not stop seeking input until only" \
+	"either \`no' or \`yes' is provided." \
 	""
 
 yn=''
@@ -69,10 +68,9 @@ SCRIPTS_DIR="${MAIN_DIR}/scripts"
 DATA_DIR="${MAIN_DIR}/data"
 ORIG_GB_DIR="${DATA_DIR}/original_gb"
 ORIG_GB_CUSTOM_DIR="${ORIG_GB_DIR}/custom_groups"
-ORIG_INC_GRP_DIR="${DATA_DIR}/original_incompatibility_groups"
 
-rm -rf "${ORIG_GB_DIR}" "${ORIG_INC_GRP_DIR}" &> /dev/null
-mkdir -p "${ORIG_GB_CUSTOM_DIR}" "${ORIG_INC_GRP_DIR}" &> /dev/null
+rm -rf "${ORIG_GB_DIR}" &> /dev/null
+mkdir -p "${ORIG_GB_CUSTOM_DIR}" &> /dev/null
 
 RECORDS=(
 	Eaero_IMP:AP018455,MG516907
