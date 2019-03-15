@@ -1,6 +1,7 @@
 *
 
 !.gitignore
+!00-downloadInitialDataset.sh
 !01-formatIncGroupFastaHeaders.sh
 !02-makeIncompatibilityBlastDB.sh
 !03-splitMultiGBs.sh
