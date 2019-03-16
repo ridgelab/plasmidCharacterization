@@ -118,9 +118,6 @@ do
 	GROUP=`printf "$record" | cut -d ':' -f 1`
 	ACC_LIST=`printf "$record" | cut -d ':' -f 2`
 
-	printf "%s: %s\n" \
-		"Currently attempting" \
-
 	curl "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi" \
 		--data-urlencode "db=nuccore" \
 		--data-urlencode "rettype=gbwithparts" \
