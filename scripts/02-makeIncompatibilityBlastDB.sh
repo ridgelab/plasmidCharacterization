@@ -16,7 +16,7 @@ rm -f ${INC_GRP_DIR}/makeBlastDB.log &> /dev/null
 
 cd ${INC_GRP_DIR}
 
-BLAST_BIN_PATH="${HOME}/software/ncbi-blast-2.4.0+-src/c++/build/bin"
+BLAST_BIN_PATH="${HOME}/software/blast+-2.4.0/c++/build/bin"
 
 time ${BLAST_BIN_PATH}/makeblastdb \
 	-dbtype nucl \

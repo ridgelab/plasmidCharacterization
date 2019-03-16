@@ -1,7 +1,7 @@
 #! /bin/bash
 
 MAIN_DIR="$(cd $( dirname "${BASH_SOURCE[0]}" )/..; pwd)"; cd ${MAIN_DIR}
-PLASMID_CSV_DIR="${MAIN_DIR}/data/plasmid_csv"
+PLASMID_MATCHES_DIR="${MAIN_DIR}/data/plasmid_matches"
 GROUPS_DIR="${MAIN_DIR}/data/groups"
 KEEP_DIR="${GROUPS_DIR}/keep"
 DISCARD_DIR="${GROUPS_DIR}/discard"
@@ -19,7 +19,7 @@ do
 
 	while read ACC
 	do
-		COUNT=`tail -n 1 "${PLASMID_CSV_DIR}/${ACC}.csv" | sed -r 's/","/\t/g' | cut -d '	' -f 23`
+		COUNT=`tail -n 1 "${PLASMID_MATCHES_DIR}/${ACC}_matches-summary.tsv" | cut -d '	' -f 6 | tr -d '"'`
 		if [ $COUNT -ge 1 ] && [ $COUNT -le 6 ]
 		then
 			printf "${ACC}\n" >> "${ofn}"
