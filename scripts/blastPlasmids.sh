@@ -8,7 +8,7 @@ BLAST_RESULT_DIR="${MAIN_DIR}/data/plasmid_blast_results"
 PLASMIDS_DB="${BLAST_RESULT_DIR}/plasmids"
 
 ACCESSION="${1}"
-THREADS=8
+THREADS=4
 
 ${BLAST_BIN_PATH}/blastn \
 	-query "${PLASMID_FASTA_DIR}/${ACCESSION}.fasta" \
@@ -20,7 +20,18 @@ ${BLAST_BIN_PATH}/blastn \
 	-num_threads ${THREADS} \
 	-perc_identity 98
 
-exit $?
+BLAST_EXIT=$?
+
+if [ $BLAST_EXIT -eq 0 ]
+then
+	printf "%s\n" "It looks like blasting for ${ACCESSION} succeeded" 1>&2
+else
+	printf "%s\n" "It looks like blasting for ${ACCESSION} failed" 1>&2
+	FAILED=`bc <<< "${FAILED}+1"`
+fi
+
+
+exit $BLAST_EXIT
 
 # NOTE that the blastn output will be a customized format 6. It will be
 # tab-separated and have the following columns:

@@ -14,19 +14,23 @@ rm -f ${PLASMID_BLAST_RESULTS_DIR}/*_fmt6c.tsv
 
 while read ACCESSION
 do
-	${SCRIPTS_DIR}/blastPlasmids.sh "${ACCESSION}"
+	${SCRIPTS_DIR}/blastPlasmids.sh "${ACCESSION}" &
 
-	BLAST_EXIT=$?
-
-	if [ $BLAST_EXIT -eq 0 ]
-	then
-		printf "%s\n" "It looks like blasting for ${ACCESSION} succeeded" 1>&2
-	else
-		printf "%s\n" "It looks like blasting for ${ACCESSION} failed" 1>&2
-		FAILED=`bc <<< "${FAILED}+1"`
-	fi
+	while [ `jobs -p | wc -l | tr -d ' '` -ge  4 ]
+	do
+		for job in `jobs -p`
+		do
+			if [ ${job} -ne $$ ]
+			then
+				sleep 1
+				break
+			fi
+		done
+	done
 
 done < "${KEEP_FILE}"
+
+wait `jobs -p`
 
 chmod 444 ${PLASMID_BLAST_RESULTS_DIR}/*_fmt6c.tsv &> /dev/null
 
