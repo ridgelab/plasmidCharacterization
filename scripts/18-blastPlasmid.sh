@@ -10,7 +10,7 @@ KEEP_FILE="${DATA_DIR}/groups/keep/keep.list"
 FAILED=0
 
 chmod 644 ${PLASMID_BLAST_RESULTS_DIR}/*_fmt6c.tsv &> /dev/null
-#rm -f ${PLASMID_BLAST_RESULTS_DIR}/*_fmt6c.tsv
+rm -f ${PLASMID_BLAST_RESULTS_DIR}/*_fmt6c.tsv
 
 while read ACCESSION
 do
