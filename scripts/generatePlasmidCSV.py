@@ -33,7 +33,7 @@ def parseMatchesSummaryFile(matches_fn):
 
 	with open(matches_fn, 'r') as mfd:
 		mfd.readline() # skip header
-		return mfd.readline().rstrip('\n').replace('\t', ',')
+		return ','.join(mfd.readline().rstrip('\n').split('\t')[1:])
 
 def getPercentOfTotal(count, total):
 	if total:

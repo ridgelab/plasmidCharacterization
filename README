@@ -9,7 +9,12 @@ It is designed to work by adding GenBank files into the data/original_gb
 directory. You will also need to add a Fasta file with of Incompatibility Group
 sequences into the directory data/original_incompatibility_groups with the name
 incompatibility.fasta. The Fasta file should work as long as it is correctly
-formatted. Single- or multi-line sequence entires are fine. No blank lines. The
+formatted. Single- or multi-line sequence entires are fine. No blank lines.
+Note that incompatibility.fasta already exists in this directory. This is
+because the version we used (the one you'll find in the directory) is no longer
+available online. Ours was downloaded on 1 March 2018 from the PlasmidFinder
+website. We advise replacing it with either the current version from the
+PlasmidFinder website or with a custom file or your own. The
 GenBank files should be concatenations of one or more GenBank files. As some
 accessions will fit into more than one grouping, it is okay for the GenBank
 record for a single accession to occur in more than one file. That record must,
