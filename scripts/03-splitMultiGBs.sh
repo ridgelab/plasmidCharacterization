@@ -8,7 +8,7 @@ PLASMID_GB_DIR="${MAIN_DIR}/data/plasmid_gb"
 mkdir -p "${PLASMID_GB_DIR}" &> /dev/null
 cd "${PLASMID_GB_DIR}"
 
-chmod 644 "${PLASMID_GB_DIR}"/*.gb
+chmod 644 "${PLASMID_GB_DIR}"/*.gb &> /dev/null
 rm -f "${PLASMID_GB_DIR}"/*.gb
 
 while read ifn 
