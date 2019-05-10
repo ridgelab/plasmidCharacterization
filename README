@@ -1,12 +1,12 @@
 README
 ======
 
-This repository contains the scripts from Card, et al. (2019) and Pickett, et
-al. (2019), both in press.
-If you use this repository, or ideas from it, please both cite both papers in
-your work and include the link to this repository. The latter paper provides an
-overview of the process employed in this repository. Please review it and the
-detailed methods recorded in this repository in docs/DetailedMethods.pdf.
+This repository contains the scripts from Card, et al. (2019), in press.
+If you use this repository, or ideas from it, please both cite our paper in
+your work and include the link to this repository. The paper provides some
+background and motivation for creating this repository. An overview of the
+process employed is recorded in docs/Overview.pdf. Please review it and the
+detailed methods recorded in docs/DetailedMethods.pdf.
 
 It is designed to work by adding GenBank files into the data/original_gb
 directory. You will also need to add a Fasta file with of Incompatibility Group
