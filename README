@@ -5,8 +5,8 @@ This repository contains the scripts from Card, et al. (2019), in press.
 If you use this repository, or ideas from it, please both cite our paper in
 your work and include the link to this repository. The paper provides some
 background and motivation for creating this repository. An overview of the
-process employed is recorded in docs/Overview.pdf. Please review it and the
-detailed methods recorded in docs/DetailedMethods.pdf.
+process employed is recorded with detailed methods in
+docs/BioinformaticsMethods.pdf.
 
 It is designed to work by adding GenBank files into the data/original_gb
 directory. You will also need to add a Fasta file with of Incompatibility Group
