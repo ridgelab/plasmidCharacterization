@@ -29,10 +29,12 @@
 !25-createDistMatrix.sh
 !26-createDistTree.sh
 !27-addTreeLeafLabels.sh
+!28-convertNewick2NexusAndAddColor.sh
 !addFamCol.awk
 !blast.sh
 !blastPlasmids.sh
 !calcGroupCSVstats.py
+!convertNewick2NexusAndAddColor.py
 !eValueHist.R
 !eValueHist.sh
 !extractGroupLists.awk
