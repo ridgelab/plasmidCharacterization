@@ -61,7 +61,7 @@ scripts/17-makePlasmidBlastDB.sh.
 GNU sed is used in some scripts. If your system used BSD sed by default, you'll
 need to either make GNU sed your default or alter the scripts to use GNU sed.
 Likewise, the same thing will need to be done for AWK and find. CAM (Miller, et
-al. 2019, in press) is needed to create the Newick tree. It can be downloaded on GitHub
+al. 2019, PeerJ #6984) is needed to create the Newick tree. It can be downloaded on GitHub
 at https://github.com/ridgelab/cam. We assume the CAM script makeNewick.py is
 in your PATH. Modify scripts/26-createDistTree.sh if needed to specify the path
 to the script.
